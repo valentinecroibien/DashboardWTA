@@ -1,0 +1,179 @@
+Le dictionnaire des variables pour les fichiers WTA est plus ou moins le même que celui des fichiers ATP.
+
+Pour les fichiers du type : wta_matches_1928 à wta_matches_2021
+                       et : wta_matches_qual_itf_1928 à wta_matches_qual_itf_2021
+Ces fichiers nous donnent les résultats des matchs.
+
+tourney_id : 
+un unique identifiant pour chaque tournoi. Les quatre premiers caractères sont correspondent toujours à l'année
+
+tourney_name : 
+le nom du tournoi
+
+surface : 
+la surface du terrain : grass, hard, carpet, clay
+
+draw_size :
+nombre de joueurs dans le tirage, souvent arrondis à la plus proche puissance de 2
+
+tourney_level : 
+niveau du tournoi :
+- For women, there are several additional tourney_level codes, including 'P' = Premier, 'PM' = Premier Mandatory, and 'I' = International. The various levels of ITFs are given by the prize money (in thousands), such as '15' = ITF $15,000. Other codes, such as 'T1' for Tier I (and so on) are used for older WTA tournament designations. 'D' is used for Federation/Fed/Billie Jean King Cup, and also for Wightman Cup and Bonne Bell Cup.
+
+- Others, eventually for both genders: 'E' = exhibition (events not sanctioned by the tour, though the definitions can be ambiguous), 'J' = juniors, and 'T' = team tennis, which does yet appear anywhere in the dataset but will at some point.
+
+tourney_date :
+date du tournoi, 8 chiffres, YYYYMMDD, habituellement le lundi de la semaine de tournoi
+
+match_num :
+l'identifiant du match. 
+
+winner_id : 
+l'identifiant du joueur vainqueur du match
+
+winner_seed:
+???
+
+winner_entry:
+- 'WC' = wild card, 'Q' = qualifier, 'LL' = lucky loser, 'PR' = protected ranking, 'ITF' = ITF entry, and there are a few others that are occasionally used.
+
+winner_name : 
+nom du vainqueur
+
+winner_hand :
+main utilisée par le joueur
+- R = right, L = left, U = unknown. Pour les joueurs ambidextres, c'est leur main de service.
+
+winner_ht :
+hauteur en centimètres, quand disponible
+
+winner_ioc : 
+3 caractères code pays du vainqueur
+
+winner_age :
+âge en années
+
+Nous disposons des mêmes variables pour le perdant :
+loser_id
+loser_seed
+loser_entry
+loser_name
+loser_hand
+loser_ht
+loser_ioc
+loser_age
+
+
+score : 
+Score du match (par exemple : 6-0 6-1)
+
+best_of :
+3 ou 5, indiquant le nombre de sets pour le match
+
+round :
+le tour 
+F, SF, QF, R16, R32, R64, R128, RR
+
+minutes : 
+durée du match quand disponible
+
+w_ace :
+nombre d'aces du vainqueur
+
+w_df
+nombre de fautes doubles du vainqueur
+
+w_svpt
+nombre de points de service du vainqueur
+
+w_1stIn :
+nombre de premier service fait du vainqueur
+
+w_1stWon
+nombre de points sur le premier service gagné du vainqueur
+ 
+w_2ndWon
+nombre de points sur le second service gagné du vainqueur
+
+w_SvGms
+nombre de service de jeux du vainqueur
+
+w_bpSaved
+nombre de break points sauvés du vainqueur
+
+w_bpFaced
+nombre de break points rencontrés du vainqueur
+
+Nous disposons des mêmes variables pour le perdant
+l_ace
+l_df
+l_svpt
+l_1stIn
+l_1stWon
+l_2ndWon
+l_SvGms
+l_bpSaved
+l_bpFaced
+
+
+winner_rank : 
+classemnt WTA du vainqueur au moment du tournoi 
+
+winner_rank_points :
+Nombre de points au classement quand disponible
+
+Nous disposons des mêmes variables pour le perdant
+loser_rank
+loser_rank_points
+
+
+
+
+Pour le fichiers de type : wta_players
+Ce fichier nous donne les caractéristiques des joueuses.
+
+player_id :
+identifiant de la joueuse
+
+name_first : 
+prénom de la joueuse
+
+name_last :
+nom de famille de la joueuse
+
+hand :
+main de la joueuse
+- R = right, L = left, U = unknown. Pour les joueurs ambidextres, c'est leur main de service.
+
+dob :
+date de naissance de la joueuse, YYYYMMDD
+
+ioc :
+pays de la joueuse
+
+height : 
+taille de la joueuse quand disponible
+
+wikidata_id :
+identifiant wikidata de la joueuse
+
+
+Pour les fichiers de type : wta_rankings_00s à wta_rankings_90s
+Ces fichiers nous indiquent les classements des joueuses et leur points au classement
+
+ranking_date : 
+la date où le classement a été réalisé, YYYYMMDD
+Récurrence hebdomadaire, début le 01 janvier de chaque décennie
+
+rank : 
+le rang de la joueuse
+
+player : 
+l'identifiant de la joueuse
+
+points : 
+le nombre de points de la joueuse
+
+tours :
+???
+
