@@ -296,3 +296,4 @@ colnames(effectif_profil_colonne_pourcentage)=colnames(effectif)
 effectif_profil_colonne_pourcentage
 
 
+  
