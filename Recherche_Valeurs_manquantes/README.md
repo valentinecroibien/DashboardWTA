@@ -1,4 +1,5 @@
-#Valeurs manquantes
+Valeurs manquantes
+================
 
 Sur les bases de données concernant les matchs il y a 32 variables avec des valeurs manquantes. Parmis elles, 9 peuvent être complétées il s'agit des variables : 
 
