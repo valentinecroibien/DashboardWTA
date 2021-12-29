@@ -1,7 +1,7 @@
 Valeurs manquantes
 ================
 
-Sur les bases de données concernant les matchs il y a 32 variables avec des valeurs manquantes. Parmis elles, 9 peuvent être complétées il s'agit des variables : 
+Sur les bases de données concernant les matchs il y a 31 variables avec des valeurs manquantes. Parmis elles, 8 peuvent être complétées il s'agit des variables : 
 
 * **winner_rank**
 * **winner_rank_points**
