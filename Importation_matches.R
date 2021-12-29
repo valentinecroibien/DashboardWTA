@@ -15,6 +15,7 @@ list_players <- grep(pattern = "^wta_players.csv$", x = list_files, value = TRUE
 
 list_rankings <- grep(pattern = "^wta_rankings_[[:digit:]]{2}s.csv$", x = list_files, value = TRUE)
 
+list_rankings <- list_rankings[1:3]
 list_rankings[4] <- grep(pattern = "^wta_rankings_current.csv$", x = list_files, value = TRUE)
 
 
@@ -25,12 +26,15 @@ lst_names <- paste('wta_', str_extract(string = list_matches, pattern = "[[:digi
 # On effectue une boucle avec map (ou lapply) pour importer les donnees et stocker les tibbles dans une liste
 lst_matchs <- map(.x = list_matches, 
                .f = function (x) read_csv(paste("tennis_wta/", 
-                                                x, sep = ""), col_types = 'cccdcddddcccdcdddcccdcdcdcllllllllllllllllllldddd'))
+                                                x, sep = ""), col_types = 'cccdcdddccccdcddccccdcdcdcddddddddddddddddddddddd'))
 names(lst_matchs) <- lst_names
 
 # Recolloage des bases à l'aide de la fonction reduce
 # Résultats des matches de 2000 à 2021
 wta_matches <- reduce(.x = lst_matchs, .f = bind_rows)
+
+
+
 
 #### Liste des tibbles des matches de qualification de 2000 à 2021 ####
 # On crée le vecteur de chaines de caractères des nom des tibbles qu'on va créer lors de l'importation
@@ -39,12 +43,15 @@ lst_names <- paste('wta_qualif', str_extract(string = list_qualifs, pattern = "[
 # On effectue une boucle avec map (ou lapply) pour importer les donnees et stocker les tibbles dans une liste
 lst_qualifs <- map(.x = list_qualifs, 
                .f = function (x) read_csv(paste("tennis_wta/", 
-                                                x, sep = ""), col_types = 'cccdddddcccdcdddcccdcdcdcllllllllllllllllllddddd'))
+                                                x, sep = ""), col_types = 'cccdcdddccccdcddccccdcdcdcddddddddddddddddddddddd' ))
 names(lst_qualifs) <- lst_names
 
 # Recolloage des bases à l'aide de la fonction reduce
 # Résultats des matches qualifs de 2000 à 2021
 wta_qualifs <- reduce(.x = lst_qualifs, .f = bind_rows)
+
+
+
 
 
 
@@ -54,13 +61,19 @@ wta_qualifs <- reduce(.x = lst_qualifs, .f = bind_rows)
 # On effectue une boucle avec map (ou lapply) pour importer les donnees et stocker les tibbles dans une liste
 lst_rankings <- map(.x = list_rankings, 
                    .f = function (x) read_csv(paste("tennis_wta/", 
-                                                    x, sep = "")))
-names(lst_qualifs) <- list_rankings
+                                                    x, sep = ""), col_types = "ddddd"))
+names(lst_rankings) <- list_rankings
 
 # Recolloage des bases à l'aide de la fonction reduce
 # Résultats des matches qualifs de 2000 à 2021
 wta_rankings <- reduce(.x = lst_rankings, .f = bind_rows)
 
+
+
+
+
+
 #### Liste des joueurs ####
 wta_players <- read_csv("tennis_wta/wta_players.csv")
 wta_players <- wta_players[-c(1:2),]
+s
