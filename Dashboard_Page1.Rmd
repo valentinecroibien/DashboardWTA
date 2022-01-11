@@ -22,6 +22,7 @@ library("DataExplorer")
 library("lubridate")
 library(plotly)
 library(shinyWidgets)
+library(rvest)
 
 list_files <- list.files(here("tennis_wta"))
 
@@ -87,13 +88,51 @@ wta_players <- wta_players[-c(1:2),]
 
 ```
 
+Accueil
+================================
+
+Column {.sidebar data-width=200}
+------------------------------------
+### Choix de la joueuse
+```{r}
+joueuses <- c("Justine Henin", "Serena Williams")
+selectInput("joueuse", label = "Sélection :",
+            choices = joueuses, selected = "Justine Henin")
+```
+
+row 
+-----------------------------------------------------------------------
+### Pour les années 2000 à 2010
+
+```{r}
+
+titre <- "Classement féminin de tennis : classement WTA"
+
+valueBox(titre, icon = "fa-trophy", color = "lightblue")
+```
+
+
+row
+-----------------------------------------------------------------------
+
+### . {.no-title}
+
+
+### Classement WTA
+row 
+-----------------------------------------------------------------------
+
+### Page 1
+### Page 2
+### Page 3
+
 
 Vision générale de la carrière
 ===================================== 
 ```{r}
 #### Liste des matchs joués par Justine Hénin (gagnante ou perdante) ####
-joueuse = 'Justine Henin'
 
+joueuse <- "Justine Henin"
 ## Qualifications 
 wta_qualifs %>% 
   filter(winner_name == joueuse | loser_name == joueuse) %>%
@@ -135,23 +174,56 @@ if (hand_joueuse =='R') {
 }else{
    hand_joueuse = 'Gauche'
 }
+
+nat_joueuse = wta_players$ioc[i]
+```
+
+```{r}
+id_wiki <- wta_players$wikidata_id[which(wta_players$player_id == id_joueuse)]
+
+url_wikidata <- paste("https://www.wikidata.org/wiki/", id_wiki, sep="")
+
+page_wiki <- xml2::read_html(url_wikidata, encoding="UTF-8")
+
+imgs <- html_nodes(page_wiki, "img")%>%
+  html_attr('src')
+
+image_profil <- str_sub(imgs[1], 3,-1)
+
+download.file(image_profil, "profil.jpg", mode = "wb")
+```
+
+```{r}
+url_wikipedia <- paste("https://fr.wikipedia.org/wiki/", prenom_joueuse, sep = "")
+url_wikipedia <- paste(url_wikipedia, nom_joueuse, sep = "_")
+
+page_wikipedia <- xml2::read_html(url_wikipedia, encoding="UTF-8")
+
+imgs2 <- html_nodes(page_wikipedia, "table")[1]%>%
+  html_nodes("img")%>%
+  html_attr('src')
+
+
+image_profil2 <- str_sub(imgs2[1], 3,-1)
+
+download.file(image_profil2, "profil.jpg", mode = "wb")
 ```
 
 
 <div class = "row">
 <div class = "col-md-6">
 <center>
-```{r picture, echo = F, out.width = '75%'}
-knitr::include_graphics("Justine_Henin_RG2010.jpeg")
-```
+<img alt src ="profil.jpg" height = 250>
 </center>
 </div>
+
 
 <div class = "col-md-6">
 <center> 
 <h2>`r joueuse`</h2>
 </center>
 <p> <a>Date de naissance :</a> `r dob_joueuse`, (`r trunc(time_length(interval(dob_joueuse, Sys.time()), "years"))` ans)</p>
+<p> <a>Nationalité :</a> `r nat_joueuse` </p>
 <p> <a>Taille :</a> `r height_joueuse` cm</p>
 <p> <a>Main :</a> `r hand_joueuse`</p>
 </div>
@@ -177,7 +249,8 @@ a <- ggplot(data = rankings_joueuse, aes(x=ranking_date, y = rank)) +
   scale_y_reverse() + 
   ylab("Rang") +
   xlab("Date") +
-  theme(axis.text.x = element_text(angle=45))
+  theme(axis.text.x = element_text(angle=45)) + 
+  theme_minimal()
 
 ggplotly(a)
 ```
@@ -187,20 +260,73 @@ Nombre clés {data-height = 100}
 
 ### Nombre de médailles
 ```{r}
-medals = "1 médaille d'or"
-valueBox(value = medals,icon = "fas fa-medal",caption = "Nombre de médailles", color = "lightgreen")
+list <-  html_nodes(page_wikipedia, "table")[1]%>%
+  html_nodes("tr")%>%
+  html_text()
+
+val_gain <- grep(pattern = "^Gains en tournois.", x = list, value = TRUE)
+i_gain <- which(list == val_gain)
+
+val_medal <- grep(pattern = "^Simple.", x = list, value = TRUE)
+i_medal <- which(list == val_medal[length(val_medal)])
+
+tab <- html_nodes(page_wikipedia, "table")[1]%>%
+  html_nodes("tr")
+
+gain <- tab[i_gain]%>%
+  html_nodes("td")%>%
+  html_text()
+gains <- str_sub(gain, 1, -3)
+
+
+medals <- tab[i_medal]%>%
+  html_nodes("td")%>%
+  html_text()
+
+med_or <- as.numeric(str_sub(medals[2], 1, -2))
+if (is.na(med_or)){
+  med_or = 0
+}
+
+med_argent <- as.numeric(str_sub(medals[3], 1, -2))
+if (is.na(med_argent)){
+  med_argent = 0
+}
+
+med_bronze <- as.numeric(str_sub(medals[4], 1, -2))
+if (is.na(med_bronze)){
+  med_bronze = 0
+}
+
+val_titres <- grep(pattern = "^Titres.", x = list, value = TRUE)
+i_titres <- which(list == val_titres[1])
+
+titres <- tab[i_titres]%>%
+  html_nodes("td")%>%
+  html_text()
+titres <- str_sub(titres[2], 1, -2)
+
+```
+
+```{r}
+med = med_or + med_argent + med_bronze
+
+valueBox(value = med,icon = "fas fa-medal",caption = "Nombre de médailles olympiques", color = "lightgreen")
 ```
 
 ### Nombre de titres
+
 ```{r}
-title = 43
-valueBox(value = title,icon = "fas fa-trophy",caption = "Nombre de titres", color = "lightblue")
+valueBox(value = titres,icon = "fas fa-trophy",caption = "Nombre de titres", color = "lightblue")
 ```
 
 ### Gains en tournois
 ```{r}
-win = '20 863 335 $'
-valueBox(value = win, icon = "fas fa-dollar-sign",caption = "Gains en tournois", color = "lightpink")
+gains <- paste(gains, "$", sep="")
+```
+
+```{r}
+valueBox(value = gains, icon = "fas fa-dollar-sign",caption = "Gains en tournois", color = "lightpink")
 ```
 
 Victoires {data-height = 450}
@@ -231,50 +357,54 @@ summary_carriere %>%
 ```
 
 ```{r}
-victory_surface <- function(x){
+victory_surface <- function(surf_choix){
   
   matches_joueuse %>%
-    filter(surface == x ) %>%
+    filter(surface == surf_choix ) %>%
     group_by(result)%>%
     summarise(n=n()) -> resume_results
   
   if(nrow(resume_results) != 1){
-    nb_victoire <- resume_results$n[2]
+    nb_victoire <- resume_results$n[which(resume_results$result == "Victoire")]
   }else{
       nb_victoire <- 0
     }
 
-  nb_defaite <- resume_results$n[1]
-
-  nb_tot <- nb_victoire + nb_defaite
-
-  y <- round(nb_victoire * 100 / nb_tot, 1)
+  y <- nb_victoire
+  y
 }
+```
 
-nb_match <- function(x){
+```{r}
+nb_match <- function(surf_choix){
   matches_joueuse %>%
-    filter(surface == x ) %>%
+    filter(surface == surf_choix) %>%
     group_by(result)%>%
     summarise(n=n()) -> resume_results
   
-  if(nrow(resume_results) != 1){
-    nb_victoire <- resume_results$n[2]
+  if(nrow(resume_results) > 1){
+    nb_victoire <- resume_results$n[which(resume_results$result == "Victoire")]
   }else{
       nb_victoire <- 0
-    }
-
-  nb_defaite <- resume_results$n[1]
+  }
+  
+  if(nrow(resume_results) != 0){
+    nb_defaite <- resume_results$n[which(resume_results$result == "Défaite")]
+  }else{
+      nb_defaite <- 0
+  }
 
   nb_tot <- nb_victoire + nb_defaite
   
   y <- nb_tot
+  y
 }
 
 ```
 
 ```{r}
 output$gauge <- renderGauge({
-  rate <- victory_surface(input$surface_variable)
+  rate <- round(victory_surface(input$surface_variable)*100/nb_match(input$surface_variable),1)
   
   if (is.null(rate)){
     rate = "-"
@@ -284,6 +414,9 @@ output$gauge <- renderGauge({
   ))
 })
 
+```
+
+```{r}
 output$nb_surface <- renderText({
   nb <- nb_match(input$surface_variable)
 })
