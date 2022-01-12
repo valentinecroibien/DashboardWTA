@@ -1,3 +1,10 @@
+/*Feuille de style pour le theme
+
+Nous avons utilisé un theme existant, le theme flatly auquel nous avons apporté 
+des modifications sur l couleur des textes, de la navbar, des valueBox et de la 
+sidebar. 
+*/
+
 @import url("https://fonts.googleapis.com/css?family=Lato:400,700,400italic&display=swap");
 /*!
  * bootswatch v3.4.1
