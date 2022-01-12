@@ -94,7 +94,7 @@ Vision générale de la carrière
 ```{r}
 #### Liste des matchs joués par Justine Hénin (gagnante ou perdante) ####
 
-joueuse <- "Justine Henin"
+joueuse <- "Amelie Mauresmo"
 ## Qualifications 
 wta_qualifs %>% 
   filter(winner_name == joueuse | loser_name == joueuse) %>%
@@ -138,21 +138,6 @@ if (hand_joueuse =='R') {
 }
 
 nat_joueuse = wta_players$ioc[i]
-```
-
-```{r}
-id_wiki <- wta_players$wikidata_id[which(wta_players$player_id == id_joueuse)]
-
-url_wikidata <- paste("https://www.wikidata.org/wiki/", id_wiki, sep="")
-
-page_wiki <- xml2::read_html(url_wikidata, encoding="UTF-8")
-
-imgs <- html_nodes(page_wiki, "img")%>%
-  html_attr('src')
-
-image_profil <- str_sub(imgs[1], 3,-1)
-
-download.file(image_profil, "profil.jpg", mode = "wb")
 ```
 
 ```{r}
@@ -205,6 +190,7 @@ wta_rankings %>%
   filter(player == id_joueuse) %>%
   select(c(ranking_date, rank, points)) -> rankings_joueuse
 
+if (nrow(rankings_joueuse) != 0){
 library("scales")
 a <- ggplot(data = rankings_joueuse, aes(x=ranking_date, y = rank)) +
   geom_line(size = 0.4, color = "#996699") +
@@ -215,6 +201,10 @@ a <- ggplot(data = rankings_joueuse, aes(x=ranking_date, y = rank)) +
   theme_minimal()
 
 ggplotly(a)
+}else{
+  message <- paste("Les classements de", joueuse,"ne sont pas disponibles.", sep = " ")
+  renderText(message)
+}
 ```
 
 Nombre clés {data-height=150}
@@ -310,18 +300,18 @@ matches_joueuse %>%
                              winner_name != joueuse ~ 'Défaite')) %>%
     select(-winner_name, -loser_name) -> summary_carriere
 
-summary_carriere %>%
-  select(-opponent, -score) %>%
-  mutate(tourney_result = case_when(round == 'F' & result == 'Victoire' ~ 'W',
-                                    result == 'Défaite' ~ round)) %>%
-  drop_na(tourney_result) %>%
-  arrange(tourney_date) -> matches_joueuse
+# summary_carriere %>%
+#   select(-opponent, -score) %>%
+#   mutate(tourney_result = case_when(round == 'F' & result == 'Victoire' ~ 'W',
+#                                     result == 'Défaite' ~ round)) %>%
+#   drop_na(tourney_result) %>%
+#   arrange(tourney_date) -> matches_joueuse
 ```
 
 ```{r}
 victory_surface <- function(surf_choix){
   
-  matches_joueuse %>%
+  summary_carriere %>%
     filter(surface == surf_choix ) %>%
     group_by(result)%>%
     summarise(n=n()) -> resume_results
@@ -339,7 +329,7 @@ victory_surface <- function(surf_choix){
 
 ```{r}
 nb_match <- function(surf_choix){
-  matches_joueuse %>%
+  summary_carriere %>%
     filter(surface == surf_choix) %>%
     group_by(result)%>%
     summarise(n=n()) -> resume_results
