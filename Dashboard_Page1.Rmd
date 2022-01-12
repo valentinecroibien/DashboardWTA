@@ -4,10 +4,10 @@ output:
   flexdashboard::flex_dashboard:
     orientation : row
     vertical_layout: fill
-    theme : flatly
+    css: styles.css
     source_code: embed
-  runtime : shiny
----
+runtime : shiny
+---   
 
 ```{r setup, include=FALSE}
 library(flexdashboard)
@@ -88,44 +88,6 @@ wta_players <- wta_players[-c(1:2),]
 
 ```
 
-Accueil
-================================
-
-Column {.sidebar data-width=200}
-------------------------------------
-### Choix de la joueuse
-```{r}
-joueuses <- c("Justine Henin", "Serena Williams")
-selectInput("joueuse", label = "Sélection :",
-            choices = joueuses, selected = "Justine Henin")
-```
-
-row 
------------------------------------------------------------------------
-### Pour les années 2000 à 2010
-
-```{r}
-
-titre <- "Classement féminin de tennis : classement WTA"
-
-valueBox(titre, icon = "fa-trophy", color = "lightblue")
-```
-
-
-row
------------------------------------------------------------------------
-
-### . {.no-title}
-
-
-### Classement WTA
-row 
------------------------------------------------------------------------
-
-### Page 1
-### Page 2
-### Page 3
-
 
 Vision générale de la carrière
 ===================================== 
@@ -149,7 +111,7 @@ prenom_joueuse <- str_split(joueuse," ", simplify = TRUE)[1]
 ```
 
 
-Ligne 1 {data-height = 450}
+Ligne 1 {data-height=400}
 -----------------------------------------------------------------------
 
 ### Profil de la joueuse
@@ -222,16 +184,16 @@ download.file(image_profil2, "profil.jpg", mode = "wb")
 <center> 
 <h2>`r joueuse`</h2>
 </center>
-<p> <a>Date de naissance :</a> `r dob_joueuse`, (`r trunc(time_length(interval(dob_joueuse, Sys.time()), "years"))` ans)</p>
-<p> <a>Nationalité :</a> `r nat_joueuse` </p>
-<p> <a>Taille :</a> `r height_joueuse` cm</p>
-<p> <a>Main :</a> `r hand_joueuse`</p>
+<p> <b>Date de naissance :</b> `r dob_joueuse`, (`r trunc(time_length(interval(dob_joueuse, Sys.time()), "years"))` ans)</p>
+<p> <b>Nationalité :</b> `r nat_joueuse` </p>
+<p> <b>Taille :</b> `r height_joueuse` cm</p>
+<p> <b>Main :</b> `r hand_joueuse`</p>
 </div>
 </div>
 
 ### Évolution dans le classement 
 
-```{r, fig.width = 9, fig.height = 5}
+```{r, fig.width = 9}
 annee <- str_sub(wta_rankings$ranking_date, 1, 4)
 mois <- str_sub(wta_rankings$ranking_date, 5, 6)
 jour <- str_sub(wta_rankings$ranking_date, 7, 8)
@@ -245,7 +207,7 @@ wta_rankings %>%
 
 library("scales")
 a <- ggplot(data = rankings_joueuse, aes(x=ranking_date, y = rank)) +
-  geom_line(size = 0.5, color = "#CC3300") +
+  geom_line(size = 0.4, color = "#996699") +
   scale_y_reverse() + 
   ylab("Rang") +
   xlab("Date") +
@@ -255,7 +217,7 @@ a <- ggplot(data = rankings_joueuse, aes(x=ranking_date, y = rank)) +
 ggplotly(a)
 ```
 
-Nombre clés {data-height = 100}
+Nombre clés {data-height=150}
 -----------------------------------------------------------------------
 
 ### Nombre de médailles
@@ -311,13 +273,13 @@ titres <- str_sub(titres[2], 1, -2)
 ```{r}
 med = med_or + med_argent + med_bronze
 
-valueBox(value = med,icon = "fas fa-medal",caption = "Nombre de médailles olympiques", color = "lightgreen")
+valueBox(value = med,icon = "fas fa-medal",caption = "Nombre de médailles olympiques", color = "lavender")
 ```
 
 ### Nombre de titres
 
 ```{r}
-valueBox(value = titres,icon = "fas fa-trophy",caption = "Nombre de titres", color = "lightblue")
+valueBox(value = titres,icon = "fas fa-trophy",caption = "Nombre de titres", color = "lavender")
 ```
 
 ### Gains en tournois
@@ -326,17 +288,17 @@ gains <- paste(gains, "$", sep="")
 ```
 
 ```{r}
-valueBox(value = gains, icon = "fas fa-dollar-sign",caption = "Gains en tournois", color = "lightpink")
+valueBox(value = gains, icon = "fas fa-dollar-sign",caption = "Gains en tournois", color = "lavender")
 ```
 
-Victoires {data-height = 450}
+Victoires {data-height=350}
 -----------------------------------------------------------------------
 
 ### Pourcentage de victoire par type de surface
 ```{r}
 matches_joueuse$surface <- factor(matches_joueuse$surface, levels = c("Clay", "Hard", "Grass", "Carpet"), labels = c("Terre Battue", "Dur", "Gazon","Moquette"))
 Surface.Variables <- levels(matches_joueuse$surface)
-selectInput("surface_variable", label = "Sélectionner le type de surface", choices = Surface.Variables)
+selectInput("surface_variable", label = "Sélectionner le type de surface", choices = Surface.Variables, selected = 'Terre Battue')
 ```
 
 ```{r}
@@ -431,7 +393,7 @@ output$nb_surface <- renderText({
 
 <div class = "col-md-6">
 <center>
-<h4><a>Nombre de matchs joués sur cette surface :</a></h4>
+<h4><b>Nombre de matchs joués sur cette surface :</b></h4>
 <h5>`r textOutput("nb_surface")` </h5>
 </center>
 </div>
@@ -453,7 +415,7 @@ op[1:10,]%>%
   pivot_longer(cols = c(Victoire, Défaite), names_to = "result", values_to = "eff") %>%
   ggplot(mapping = aes(x = reorder(opponent, Total), y = eff, fill = result)) +
   geom_col() +
-  scale_fill_discrete(type = c('Défaite' = "tomato3", "Victoire" = "lightgreen")) +
+  scale_fill_discrete(type = c('Défaite' = "#CC99CC", "Victoire" = "#996699" )) +
   coord_flip() +
   theme_bw() +
   labs(y = "Nombre de confrontations", x = 'Adversaires') +
@@ -462,7 +424,6 @@ op[1:10,]%>%
 
 ggplotly(a)
 ```
-
 
 Visualisation d'une saison de la joueuse
 ===================================== 
