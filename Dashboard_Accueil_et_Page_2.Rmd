@@ -113,7 +113,7 @@ WTA est la principale association organisant les compétitions féminines de ten
 <br>
 
 ```{r}
-renderText(paste("Ici, vous aurez un aperçu de la carrière de ", joueuse,". En commençant par sa carrière en générale depuis les années 2000, puis un focus sur la saison de votre choix et enfin un focus sur le tournoi de votre choix."))
+renderText(paste("Ici, vous aurez un aperçu de la carrière de ", joueuse,", en commençant par sa carrière en générale depuis les années 2000, puis un focus sur la saison de votre choix et enfin un focus sur le tournoi de votre choix."))
 ```
 </div> 
 
