@@ -27,6 +27,12 @@ library(bslib)
 library("lubridate")
 library(shinyWidgets)
 library(rvest)
+library(kableExtra)
+library(RColorBrewer)
+library(viridis)
+library(ggrepel)
+library(readr)
+library(questionr)
 
 
 
@@ -875,3 +881,698 @@ plotOutput("surface_carpet")
 
 
 
+Visualisation par tournoi
+===
+
+Column {.sidebar}
+-----------------------------------------------------------------------
+
+```{r, eval = TRUE}
+matches_joueuse %>% 
+  filter(str_detect(tourney_name, "Fed Cup") == FALSE) %>%
+  filter(tourney_name != "Gold Coast") -> tmp
+```
+
+```{r}
+annee_saison <- unique(str_sub(tmp$tourney_date, 1, 4))
+selectInput("saison", label = "Sélection de la saison", choices = annee_saison, selected = "2000")
+```
+
+```{r}
+selectInput("tournoi", label = "Sélection du tournoi", choices = NULL)
+
+observeEvent(
+  input$saison,
+  updateSelectInput(session, "tournoi", label = "Sélection du tournoi", 
+                    choices = unique(filter(tmp, str_sub(tourney_date, 1, 4) == input$saison)$tourney_name))
+)
+```
+
+<div style="white-space:pre-line">
+#### Description du tournoi
+```{r}
+output$description_tournoi <- renderText({
+  
+  Out <- "Informations sur le tournoi non disponible."
+  
+  if(input$tournoi == "Australian Open") {
+    tournoi <- "Open d'Australie"
+    categorie <- "Grand Chelem"
+    localisation <- "Melbourne, Australie"
+    surface <- "Dur (en extérieur)"
+    date <- "Janvier / Février"
+    Out <- paste("Tournoi : ", tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Wimbledon") {
+    tournoi <- "Wimbledon (The Championships)"
+    categorie <- "Grand Chelem"
+    localisation <- "Londres, Angleterre"
+    surface <- "Gazon (en extérieur)"
+    date <- "Juillet"
+    Out <- paste("Tournoi : ", tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "US Open") {
+    tournoi <- input$tournoi
+    categorie <- "Grand Chelem"
+    localisation <- "New-York, États-Unis"
+    surface <- "Dur (en extérieur)"
+    date <- "Août / Septembre"
+    Out <- paste("Tournoi : ", tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Roland Garros") {
+    tournoi <- "Internationaux de France (Roland Garros)"
+    categorie <- "Grand Chelem"
+    localisation <- "Paris, France"
+    surface <- "Terre battue (en extérieur)"
+    date <- "Mai / Juin"
+    Out <- paste("Tournoi : ", tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Berlin") {
+    tournoi <- "Tournoi d'Allemagne"
+    categorie <- "WTA 500"
+    localisation <- "Berlin, Allemange"
+    surface <- "Gazon (en extérieur)"
+    date <- "Juin"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Indian Wells") {
+    tournoi <- "Tournoi d'Indian Wells"
+    categorie <- "WTA 1000"
+    localisation <- "Indian Wells, États-Unis"
+    surface <- "Dur (en extérieur)"
+    date <- "Mars"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Miami") {
+    tournoi <- "Tournoi de Miami"
+    categorie <- "WTA 1000"
+    localisation <- "Miami, États-Unis"
+    surface <- "Dur (en extérieur)"
+    date <- "Mars"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Nice") {
+    tournoi <- "Tournoi de Nice"
+    categorie <- "WTA 125"
+    localisation <- "Nice, France"
+    surface <- "Terre battue (en extérieur)"
+    date <- "Avril"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Moscow") {
+    tournoi <- "Tournoi de Moscou"
+    categorie <- "WTA 500"
+    localisation <- "Moscou, Russie"
+    surface <- "Dur (en intérieur)"
+    date <- "Octobre"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "New Haven") {
+    tournoi <- "Tournoi de New Haven"
+    categorie <- "WTA 125"
+    localisation <- "New Haven, États-Unis"
+    surface <- "Dur (en extérieur)"
+    date <- "Août"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Luxembourg") {
+    tournoi <- "Tournoi de Luxembourg"
+    categorie <- "WTA 250"
+    localisation <- "Luxembourg, Luxembourg"
+    surface <- "Dur (en intérieur)"
+    date <- "Septembre"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Palermo") {
+    tournoi <- "Tournoi de Palerme"
+    categorie <- "WTA 250"
+    localisation <- "Palerme, Italie"
+    surface <- "Terre battue (en extérieur)"
+    date <- "Juillet"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Bratislava") {
+    tournoi <- "Tournoi de Bratislava"
+    categorie <- "WTA 250"
+    localisation <- "Bratislava, Slovaquie"
+    surface <- "Dur (en intérieur)"
+    date <- "Octobre"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Hobart") {
+    tournoi <- "Tournoi de Hobart"
+    categorie <- "WTA 250"
+    localisation <- "Hobart, Australie"
+    surface <- "Dur (en extérieur)"
+    date <- "Janvier"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Knokke-Heist") {
+    tournoi <- "Tournoi de Knokke-Heist"
+    categorie <- "WTA 250"
+    localisation <- "Knokke-Heist, Belgique"
+    surface <- "Terre battue (en extérieur)"
+    date <- "Juillet"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Linz") {
+    tournoi <- "Tournoi de Linz"
+    categorie <- "WTA 250"
+    localisation <- "Linz, Autriche"
+    surface <- "Dur (en intérieur)"
+    date <- "Octobre"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Hamburg") {
+    tournoi <- "Tournoi de Hambourg"
+    categorie <- "WTA 250"
+    localisation <- "Hambourg, Allemagne"
+    surface <- "Terre battue (en extérieur)"
+    date <- "Avril"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Scottsdale") {
+    tournoi <- "Tournoi de Scottsdale"
+    categorie <- "WTA 125"
+    localisation <- "Scottsdale, États-Unis"
+    surface <- "Dur (en extérieur)"
+    date <- "Février"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Canberra") {
+    tournoi <- "Tournoi de Canberra"
+    categorie <- "WTA 125"
+    localisation <- "Canberra, Australie"
+    surface <- "Dur (en extérieur)"
+    date <- "Janvier"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Estoril") {
+    tournoi <- "Tournoi d'Estoril"
+    categorie <- "WTA 250"
+    localisation <- "Estoril, Portugal"
+    surface <- "Terre battue (en extérieur)"
+    date <- "Avril"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Waikoloa") {
+    tournoi <- "Tournoi d'Hawaï"
+    categorie <- "WTA 125"
+    localisation <- "Waikoloa, États-Unis"
+    surface <- "Dur (en extérieur)"
+    date <- "Septembre"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Rome") {
+    tournoi <- "Tournoi de Rome (Internationaux d'Italie)"
+    categorie <- "WTA 1000"
+    localisation <- "Rome, Italie"
+    surface <- "Terre battue (en extérieur)"
+    date <- "Mai"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Zurich") {
+    tournoi <- "Tournoi de Zurich"
+    categorie <- "WTA 125"
+    localisation <- "Zurich, Suisse"
+    surface <- "Dur (en intérieur)"
+    date <- "Octobre"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Sydney") {
+    tournoi <- "Tournoi de Sydney"
+    categorie <- "WTA 1000"
+    localisation <- "Sydney, Australie"
+    surface <- "Dur (en extérieur)"
+    date <- "Janvier"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Antwerp") {
+    tournoi <- "Tournoi d'Anvers"
+    categorie <- "WTA 500"
+    localisation <- "Anvers, Belgique"
+    surface <- "Dur (en intérieur)"
+    date <- "Février"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Leipzig") {
+    tournoi <- "Tournoi de Leipzig"
+    categorie <- "WTA 125"
+    localisation <- "Leipzig, Allemagne"
+    surface <- "Dur (en intérieur)"
+    date <- "Septembre"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Amelia Island") {
+    tournoi <- "Tournoi d'Amelia Island"
+    categorie <- "WTA 125"
+    localisation <- "Amelia Island, États-Unis"
+    surface <- "Terre battue (en extérieur)"
+    date <- "Avril"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Stanford") {
+    tournoi <- "Tournoi de Stanford"
+    categorie <- "WTA 1000"
+    localisation <- "Stanford, États-Unis"
+    surface <- "Dur (en extérieur)"
+    date <- "Juillet"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Charleston") {
+    tournoi <- "Tournoi de Charleston"
+    categorie <- "WTA 500"
+    localisation <- "Charleston, États-Unis"
+    surface <- "Terre battue (en extérieur)"
+    date <- "Avril"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Dubaï") {
+    tournoi <- "Tournoi de Dubaï"
+    categorie <- "WTA 1000"
+    localisation <- "Dubaï, Émirats arabes unis"
+    surface <- "Dur (en extérieur)"
+    date <- "Février"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "San Diego") {
+    tournoi <- "Tournoi de San Diego"
+    categorie <- "WTA 1000"
+    localisation <- "Carlsbad, États-Unis"
+    surface <- "Dur (en extérieur)"
+    date <- "Juillet / Août"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Doha") {
+    tournoi <- "Tournoi de Doha"
+    categorie <- "WTA 1000"
+    localisation <- "Doha, Qatar"
+    surface <- "Dur (en extérieur)"
+    date <- "Février"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Warsaw") {
+    tournoi <- "Tournoi de Varsovie"
+    categorie <- "WTA 250"
+    localisation <- "Varsovie, Pologne"
+    surface <- "Terre battue (en extérieur)"
+    date <- "Avril / Mai"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Eastbourne") {
+    tournoi <- "Tournoi d'Eastbourne"
+    categorie <- "WTA 500"
+    localisation <- "Eastbourne, Angleterre"
+    surface <- "Gazon (en extérieur)"
+    date <- "Juin"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Brisbane") {
+    tournoi <- "Tournoi de Brisbane"
+    categorie <- "WTA 1000"
+    localisation <- "Brisbane, Australie"
+    surface <- "Dur (en extérieur)"
+    date <- "Décembre / Janvier"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Madrid") {
+    tournoi <- "Tournoi de Madrid"
+    categorie <- "WTA 1000"
+    localisation <- "Madrid, Espagne"
+    surface <- "Terre battue (en extérieur)"
+    date <- "Avril / Mai"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Montréal") {
+    tournoi <- "Tournoi du Canada"
+    categorie <- "WTA 1000"
+    localisation <- "Montréal, Canada"
+    surface <- "Dur (en extérieur)"
+    date <- "Août"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Toronto") {
+    tournoi <- "Tournoi du Canada"
+    categorie <- "WTA 1000"
+    localisation <- "Toronto, Canada"
+    surface <- "Dur (en extérieur)"
+    date <- "Août"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi %in% c("s Hertogenbosch", "'s Hertogenbosch")) {
+    tournoi <- "Tournoi de Bois-le-Duc"
+    categorie <- "WTA 250"
+    localisation <- "Rosmalen, Pays-Bas"
+    surface <- "Gazon (en extérieur)"
+    date <- "Juin"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Stuttgart") {
+    tournoi <- "Tournoi du Stuttgart"
+    categorie <- "WTA 500"
+    localisation <- "Stuttgart, Allemagne"
+    surface <- "Terre battue (en intérieur)"
+    date <- "Avril"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+
+  if(input$tournoi == "Filderstadt") {
+    tournoi <- "Tournoi du Stuttgart"
+    categorie <- "WTA 250"
+    localisation <- "Filderstadt, Allemagne"
+    surface <- "Dur (en intérieur)"
+    date <- "Octobre"
+    Out <- paste(tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  if(input$tournoi == "Olympics") {
+    Out <- "Jeux Olympiques"
+  }
+  
+  if(input$tournoi == "WTA Tour Championship") {
+    tournoi <- "WTA Finals"
+    categorie <- "Masters"
+    localisation <- "Change chaque année"
+    surface <- "Dur (en extérieur)"
+    date <- "Octobre / Novembre"
+    Out <- paste("Tournoi : ", tournoi, "\nCatégorie : ", categorie, "\nLocalisation : ", localisation, "\nSurface : ", surface, "\nPériode : ", date, sep = "\n")
+  }
+  
+  Out
+  
+  })
+
+textOutput("description_tournoi")
+```
+</div>
+
+#### Nombre de participantes
+
+```{r}
+renderValueBox({
+  wta_matches %>%
+    filter(str_sub(tourney_date, 1, 4) == input$saison) %>%
+    filter(tourney_name == input$tournoi) %>%
+    select(winner_id, loser_id) -> tmp_nb
+  
+  tmp_nb1 <- tmp_nb[, 1]
+  colnames(tmp_nb1) <- "Id"
+  tmp_nb2 <- tmp_nb[, 2]
+  colnames(tmp_nb2) <- "Id"
+  
+  tmp_nb <- rbind(tmp_nb1, tmp_nb2)
+  
+  tmp_nb <- unique(tmp_nb)
+  
+  valueBox(value = nrow(tmp_nb), caption = "Nombre de participantes", color = "red")
+})
+```
+
+Row {data-height=60}
+-----------------------------------------------------------------------
+
+###
+
+```{r, eval = TRUE}
+renderValueBox({
+  input$tournoi -> tournoi
+  input$saison -> saison
+  valueBox(value = paste(tournoi, " de ", saison), color = "lavender")
+})
+```
+
+###
+
+```{r, eval = TRUE}
+valueBox(value = paste("Tournoi de ", prenom_joueuse, " ", nom_joueuse), color = "lavender")
+```
+
+Row {data-height=85}
+-----------------------------------------------------------------------
+
+### Visualisation générale du tournoi
+
+```{r}
+renderValueBox({
+  wta_matches %>%
+    filter(str_sub(tourney_date, 1, 4) == input$saison) %>%
+    filter(tourney_name == input$tournoi) %>%
+    filter(round == "F") %>%
+    select(winner_name) -> winner_tournoi
+  winner_tournoi <- as.character(winner_tournoi)
+  valueBox(value = winner_tournoi, caption = "Nom du vainqueur du tournoi", icon = "fas fa-trophy", color = "aliceblue")
+})
+```
+
+### Performances de Justine Henin au cours de ce tournoi
+
+```{r}
+renderValueBox({
+  tmp %>%
+    mutate(round = case_when(round == "F" ~ "Finale",
+                             round == "SF" ~ "Demie finale",
+                             round == "RR" ~ "Round Robin",
+                             round == "QF" ~ "Quart de finale",
+                             round == "R16" ~ "8ème de finale",
+                             round == "R32" ~ "3ème tours",
+                             round == "R64" ~ "2ème tours",
+                             round == "R128" ~ "1er tours")) %>%
+    filter(str_sub(tourney_date, 1, 4) == input$saison) %>%
+    filter(tourney_name == input$tournoi) %>%
+    filter(loser_id == id_joueuse) %>%
+    select(round) -> round_tournoi
+  
+  wta_matches %>%
+    filter(str_sub(tourney_date, 1, 4) == input$saison) %>%
+    filter(tourney_name == input$tournoi) %>%     
+    filter(round == "F") %>%
+    select(winner_id) -> winner_id_tournoi
+  
+  if(winner_id_tournoi == id_joueuse) {
+    round_tournoi <- "Gagnante du tournoi"
+  }
+  valueBox(value = round_tournoi, caption = "Place atteinte par Justine Henin au cours du tournoi", 
+           icon = "fas fa-baseball-ball", color = "aliceblue")
+})
+```
+
+Row {data-height=210}
+-----------------------------------------------------------------------
+
+### Tableau des rencontres
+
+```{r}
+output$tab <- renderTable({
+  wta_matches %>%
+    filter(str_sub(tourney_date, 1, 4) == input$saison) %>%
+    filter(tourney_name == input$tournoi) %>%
+    filter(round %in% c("F", "SF", "QF")) %>% 
+    arrange(desc(match_num)) -> tmp_rencontre
+
+  rencontre <- data.frame(Phase = c("Finale", "Demi-finale", "Demi-finale", 
+                                    "Quart de finale", "Quart de finale", "Quart de finale", "Quart de finale"),
+                          Vainqueur = c(rep("", 7)),
+                          Perdant = c(rep("", 7)),
+                          Score = c(rep("", 7)))
+  
+  for (i in 1:nrow(tmp_rencontre)) {
+    rencontre[i, 2] <- tmp_rencontre$winner_name[i]
+    rencontre[i, 3] <- tmp_rencontre$loser_name[i]
+    rencontre[i, 4] <- tmp_rencontre$score[i]
+  }
+  
+  rencontre
+  
+  }, bordered = TRUE, striped = TRUE, align = 'c')
+
+tableOutput("tab")
+```
+
+### Pourcentage de jeux gagnés et perdus
+
+```{r}
+tmp_score <- separate(tmp, col = score, into = sprintf("SET%d", 1:3), 
+                  sep = ' ', fill = "right", remove = FALSE)
+# Barplot horizontal 
+output$barplot_jeu <- renderPlot({
+  tmp_score %>%
+    filter(str_sub(tourney_date, 1, 4) == input$saison) %>%
+    filter(tourney_name == input$tournoi) -> tmp_barplot
+  
+  nb_jeu_gagne = 0
+  nb_jeu_perdu = 0
+  
+  for (i in 1:nrow(tmp_barplot)) {
+    if (tmp_barplot$winner_id[i] == id_joueuse) {
+      nb_jeu_gagne <- sum(as.numeric(str_sub(tmp_barplot$SET1[i], 1, 1)), as.numeric(str_sub(tmp_barplot$SET2[i], 1, 1)), 
+                          as.numeric(str_sub(tmp_barplot$SET3[i], 1, 1)), nb_jeu_gagne, na.rm = TRUE)
+    }
+    else { #(tmp_barplot$loser_name[i] == nom_joueuse)
+      nb_jeu_gagne <- sum(as.numeric(str_sub(tmp_barplot$SET1[i], 3, 3)), as.numeric(str_sub(tmp_barplot$SET2[i], 3, 3)), 
+                          as.numeric(str_sub(tmp_barplot$SET3[i], 3, 3)), nb_jeu_gagne, na.rm = TRUE)
+    }
+  }
+  
+  for (i in 1:nrow(tmp_barplot)) {
+    if (tmp_barplot$winner_id[i] != id_joueuse) {
+      nb_jeu_perdu <- sum(as.numeric(str_sub(tmp_barplot$SET1[i], 1, 1)), as.numeric(str_sub(tmp_barplot$SET2[i], 1, 1)), 
+                          as.numeric(str_sub(tmp_barplot$SET3[i], 1, 1)), nb_jeu_perdu, na.rm = TRUE)
+    }
+    else { #(tmp_barplot$loser_name[i] == nom_joueuse)
+      nb_jeu_perdu <- sum(as.numeric(str_sub(tmp_barplot$SET1[i], 3, 3)), as.numeric(str_sub(tmp_barplot$SET2[i], 3, 3)), 
+                          as.numeric(str_sub(tmp_barplot$SET3[i], 3, 3)), nb_jeu_perdu, na.rm = TRUE)
+    }
+  }
+  
+  df_barplot <- data.frame(Jeu = c("Gagné", "Perdu"),
+                           Nb = c(nb_jeu_gagne, nb_jeu_perdu))
+  
+  df2_barplot <- df_barplot %>% 
+    mutate(csum = rev(cumsum(rev(Nb))), 
+           pos = Nb/2 + lead(csum, 1),
+           pos = if_else(is.na(pos), Nb/2, pos))
+
+  pourcentage <- c(round(df2_barplot$Nb / sum(df2_barplot$Nb) * 100))
+
+  ggplot(df_barplot, aes(x = "", y = Nb, fill = Jeu)) +
+    geom_bar(width = 1, stat = "identity")+
+    coord_polar("y", start = 0) +  
+    scale_fill_manual(name = "Pourcentage de jeu ", values = c("#996699", "#CC99CC")) +
+    geom_label_repel(data = df2_barplot,
+                     aes(y = pos, label = paste0(pourcentage, "%")),
+                     size = 4.5, nudge_x = 1, show.legend = FALSE) +
+    theme_void() +
+    theme(legend.title = element_text(size = 15),
+          legend.text = element_text(size = 15),
+          legend.position = "bottom")
+})
+
+plotOutput("barplot_jeu")
+```
+
+Row {data-height=180}
+-----------------------------------------------------------------------
+
+### Nationalité des joueuses participant au tournoi
+
+```{r}
+output$nationalite <- renderPlotly({
+  wta_matches %>%
+    filter(str_sub(tourney_date, 1, 4) == input$saison) %>%
+    filter(tourney_name == input$tournoi) %>%
+    select(winner_id, winner_ioc, loser_id, loser_ioc) -> tmp_nationalite
+  
+  tmp_w <- tmp_nationalite[, 1:2]
+  colnames(tmp_w) <- c("Id", "Nationalite")
+  tmp_l <- tmp_nationalite[, 3:4]
+  colnames(tmp_l) <- c("Id", "Nationalite")
+  
+  tmp_nationalite <- rbind(tmp_w, tmp_l)
+  
+  tmp_nationalite <- unique(tmp_nationalite[1])
+  
+  for (i in 1:nrow(tmp_nationalite)) {
+    tmp_nationalite$Nationalite[i] <- wta_players$ioc[which((wta_players$player_id == tmp_nationalite$Id[i]))]
+  }
+  
+  tmp_nationalite %>%
+    group_by(Nationalite) %>%
+    summarise(N = n()) -> tmp_nationalite
+  
+  ggplot(tmp_nationalite, aes(x = Nationalite, y = N)) + 
+    geom_bar(aes(fill = Nationalite), show.legend = FALSE, stat = "identity") +
+    scale_fill_viridis(option = "magma", discrete = TRUE) +
+    theme_void() +
+    ylab("") + 
+    theme(axis.text.x = element_text(size = 10, angle = 90),
+          axis.text.y = element_text(size = 10),
+          axis.title = element_text(size = 12)) -> p
+  
+  ggplotly(p) %>%
+    layout(showlegend = FALSE, xaxis = list(font = list(size = 3)))
+})
+
+plotlyOutput("nationalite")
+```
+
+### Pourcentage de break points sauvés, sur l'ensemble du tournoi
+
+<div style="text-align: justify">
+
+__Définition d'un break point :__  
+Un joueur gagne un break lorsqu'il remporte un point alors qu'il est receveur, on dit qu'il prend le service de son adversaire.    
+On parle de balle de break lorsqu'il ne reste qu'un point au receveur pour gagner le jeu sur le service de son adversaire.  
+
+</div>
+
+```{r}
+output$bp <- renderGauge({
+  tmp %>%
+    filter(str_sub(tourney_date, 1, 4) == input$saison) %>%
+    filter(tourney_name == input$tournoi) %>%
+    select(winner_id, w_bpSaved, w_bpFaced, loser_id, l_bpSaved, l_bpFaced) -> tmp_bp
+  
+  bp_Saved = 0
+  bp_Faced = 0
+  
+  for (i in 1:nrow(tmp_bp)) {
+    if (tmp_bp$winner_id[i] == id_joueuse) {
+      bp_Saved <- sum(tmp_bp$w_bpSaved[i], bp_Saved, na.rm = TRUE)
+      bp_Faced <- sum(tmp_bp$w_bpFaced[i], bp_Faced, na.rm = TRUE)
+    } else {
+      bp_Saved <- sum(tmp_bp$l_bpSaved[i], bp_Saved, na.rm = TRUE)
+      bp_Faced <- sum(tmp_bp$l_bpFaced[i], bp_Faced, na.rm = TRUE)
+    }
+  }
+  
+  pct_bp <- round((bp_Saved / bp_Faced) * 100, 1)
+  
+  if (pct_bp == "NaN") {
+    pct_bp = "-"
+  }
+  
+  gauge(pct_bp, min = 0, max = 100, symbol = "%",
+        gaugeSectors(success = c(70, 100), warning = c(40, 69), danger = c(0, 39)))
+})
+
+gaugeOutput("bp", width = '700px', height = '400px')
+```
