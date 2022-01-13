@@ -1,0 +1,562 @@
+---
+title: "WTA"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation : row
+    vertical_layout: fill
+    css: styles.css
+    source_code: embed
+runtime : shiny
+---
+
+```{r setup, include=FALSE}
+library("flexdashboard")
+library("here")
+library("tidyverse")
+library("magrittr")
+library("stringr")
+library('purrr')
+library("dplyr")
+library("DataExplorer")
+library("shiny")
+library("knitr")
+library("plotly")
+library(scales)
+library(ggrepel)
+library(bslib)
+
+
+list_files <- list.files(here("tennis_wta"))
+
+list_matches <- grep(pattern = "^wta_matches_2[[:digit:]]{3}.csv$", x = list_files, value = TRUE)
+
+list_players <- grep(pattern = "^wta_players.csv$", x = list_files, value = TRUE)
+
+list_rankings <- grep(pattern = "^wta_rankings_[[:digit:]]{2}s.csv$", x = list_files, value = TRUE)
+
+list_rankings <- list_rankings[1:3]
+list_rankings[4] <- grep(pattern = "^wta_rankings_current.csv$", x = list_files, value = TRUE)
+
+
+#### Liste des tibbles des matches de 2000 à 2021 ####
+# On crée le vecteur de chaines de caractères des nom des tibbles qu'on va créer lors de l'importation
+lst_names <- paste('wta_', str_extract(string = list_matches, pattern = "[[:digit:]]{4}"), sep = "")
+
+# On effectue une boucle avec map (ou lapply) pour importer les donnees et stocker les tibbles dans une liste
+lst_matchs <- map(.x = list_matches, 
+                  .f = function (x) read_csv(paste("tennis_wta/", 
+                                                   x, sep = ""), col_types = 'cccdcdddccccdcddccccdcdcdcddddddddddddddddddddddd'))
+names(lst_matchs) <- lst_names
+
+# Recolloage des bases à l'aide de la fonction reduce
+# Résultats des matches de 2000 à 2021
+wta_matches <- reduce(.x = lst_matchs, .f = bind_rows)
+
+#### Liste des classements de 2000 à 2021 ####
+# On crée le vecteur de chaines de caractères des nom des tibbles qu'on va créer lors de l'importation
+
+# On effectue une boucle avec map (ou lapply) pour importer les donnees et stocker les tibbles dans une liste
+lst_rankings <- map(.x = list_rankings, 
+                    .f = function (x) read_csv(paste("tennis_wta/", 
+                                                     x, sep = ""), col_types = "ddddd"))
+names(lst_rankings) <- list_rankings
+
+# Recolloage des bases à l'aide de la fonction reduce
+# Résultats des matches qualifs de 2000 à 2021
+wta_rankings <- reduce(.x = lst_rankings, .f = bind_rows)
+
+#### Liste des joueurs ####
+wta_players <- read_csv("tennis_wta/wta_players.csv")
+wta_players <- wta_players[-c(1:2),]
+
+# Information joueuse
+joueuse = 'Amelie Mauresmo'
+
+nom_joueuse <- str_split(joueuse," ", simplify = TRUE)[2]
+prenom_joueuse <- str_split(joueuse," ", simplify = TRUE)[1]
+
+id_joueuse <- wta_players$player_id[which((wta_players$name_last == nom_joueuse) & (wta_players$name_first == prenom_joueuse))]
+
+#matchs de tournois
+wta_matches %>% 
+  filter(winner_name == joueuse | loser_name == joueuse) %>%
+  select(-c(winner_seed, winner_entry, loser_seed, loser_entry, minutes, w_SvGms, l_SvGms)) -> matches_joueuse
+
+```
+
+Accueil
+================================
+
+row {data-height=150}
+-----------------------------------------------------------------------
+### Classement de tennis féminin de 2000 à 2021
+
+```{r}
+titre <- paste("Carrière de ", joueuse)
+
+valueBox(titre, color = "lavender")
+```
+
+
+row {data-height=375}
+-----------------------------------------------------------------------
+
+### . {.no-title} 
+
+<img alt src = "https://upload.wikimedia.org/wikipedia/fr/9/9f/Wta-logo.svg" >
+
+### Classement WTA {.no-title}
+<div style="text-align: justify">  
+<h1>Women's Tennis Association </h1>
+
+WTA est la principale association organisant les compétitions féminines de tennis. Aujourd’hui, l’importance des tournois féminins est égale à celle des tournois masculins ce qui n’était pas le cas à la création de la WTA en 1973. De plus, elle classe, tout au long de la saison, l'ensemble des joueuses actives en fonction de leurs performances.
+<br>
+
+```{r}
+renderText(paste("Ici, vous aurez un aperçu de la carrière de ", joueuse,". En commençant par sa carrière en générale depuis les années 2000, puis un focus sur la saison de votre choix et enfin un focus sur le tournoi de votre choix."))
+```
+</div> 
+
+row {data-height=175}
+-----------------------------------------------------------------------
+
+### Page 1
+```{r}
+titre <- "Visualisation globale"
+
+valueBox(titre, icon = "fa-globe",color = "aliceblue")
+```
+
+### Page 2
+```{r}
+titre <- "Focus sur une saison"
+
+valueBox(titre, icon = "fa-calendar",color = "aliceblue")
+```
+
+### Page 3
+```{r}
+titre <- "Focus sur un tournoi"
+
+valueBox(titre, icon = "fa-trophy", color = "aliceblue")
+```
+
+row {data-height=300}
+-----------------------------------------------------------------------
+
+### Page 1 {.no-title}
+
+<div style="text-align: justify">  
+```{r}
+renderText(paste("La première page présente de nombreuses informations sur l’ensemble de la carrière de ", joueuse,"tel que son identité, l’évolution de sa position au classement WTA, son nombre de médailles olympiques, son nombre de titres et ses gains en tournois. Vous verrez également ses pourcentages de victoires en fonction du type de terrain et son nombre de victoires et de défaites face à ses adversaires les plus rencontrées."))
+```
+</div> 
+
+### Page 2 {.no-title}
+
+<div style="text-align: justify">  
+```{r}
+renderText(paste("Sur la deuxième page vous pourrez sélectionner une année afin de voir la carrière de ",joueuse," avec un focus sur cette saison. Vous trouverez l’évolution de sa position au classement WTA, ses Grands Chelem, son nombre de matchs de tournois joués, gagnés et son nombre de tournois remportés. Finalement, vous aurez ses pourcentages de victoires et de défaites par type de terrain."))
+```
+</div> 
+
+### Page 3 {.no-title}
+
+<div style="text-align: justify">  
+```{r}
+renderText(paste("Finalement, sur la troisième page vous pourrez choisir un tournoi auquel à participé ",joueuse,". D’un côté, vous aurez une description du tournoi, la gagnante de celui-ci, le tableau des matchs et une représentation des nationalités des joueuses participant au tournoi. De l’autre côté, vous trouverez des informations sur ",joueuse,", avec sa plus haute place atteinte pendant le tournoi, son pourcentage de jeux gagnés/perdus et son pourcentage de break points sauvés."))
+```
+</div> 
+
+Focus sur une saison
+================================
+
+```{r setup_page_2 , include=FALSE}
+
+wta_rankings$annee <- str_sub(wta_rankings$ranking_date, 1, 4)
+matches_joueuse$annee <- str_sub(matches_joueuse$tourney_date, 1, 4)
+
+```
+
+Column {.sidebar data-width=700 data-padding=10}
+-------------------------------------
+
+
+```{r}
+annee_saison <- unique(str_sub(matches_joueuse$tourney_date, 1, 4))
+selectInput("season", label = "Sélection de la saison :",
+            choices = annee_saison, selected = 2000)
+```
+
+
+### Évolution de sa position au classement WTA
+
+```{r }
+interval <- c(1,seq(10,1567,10))
+
+output$classement <- renderPlotly({
+
+classement_joueuse_annee <- wta_rankings %>%
+  filter(player == id_joueuse & annee == input$season)
+
+mois <- str_sub(classement_joueuse_annee$ranking_date, 5, 6)
+jour <- str_sub(classement_joueuse_annee$ranking_date, 7, 8)
+
+classement_joueuse_annee$date <- (paste(jour, mois, classement_joueuse_annee$annee, sep = "."))
+classement_joueuse_annee$date <- as.Date(classement_joueuse_annee$date, format = "%d.%m.%Y")
+
+
+a <- ggplot(data=classement_joueuse_annee, aes(x=date, y=rank))+
+  geom_point(color = '#996699')+
+  geom_line(color = '#996699') +
+  scale_y_continuous(trans = "reverse", breaks = interval)+
+  xlab("Date")+ylab("Classement")+
+  theme_minimal()
+
+ggplotly(a)
+
+})
+
+plotlyOutput("classement")
+
+```
+
+### Ses tournois du Grand Chelem
+
+```{r}
+output$resu_tournois <- renderTable({
+
+grand_chelem <- matches_joueuse %>%
+  filter(annee == input$season) %>%
+  select(tourney_name,match_num,winner_id,winner_name,loser_id, loser_name, score, round)
+
+aus <- grand_chelem  %>%
+  filter(tourney_name == "Australian Open")%>%
+  arrange(desc(match_num))
+
+roland <- grand_chelem  %>%
+  filter(tourney_name == "Roland Garros")%>%
+  arrange(desc(match_num))
+
+us <- grand_chelem  %>%
+  filter(tourney_name =="US Open")%>%
+  arrange(desc(match_num))
+
+uk <- grand_chelem  %>%
+  filter(tourney_name == "Wimbledon")%>%
+  arrange(desc(match_num))
+
+Tournois <- c("Open Australie","Roland Garros", "Us Open", "Wimbledon")
+dernier_match <- c("Tournoi non joué","Tournoi non joué","Tournoi non joué","Tournoi non joué")
+adversaire <- c("Tournoi non joué","Tournoi non joué","Tournoi non joué","Tournoi non joué")
+Résultat <- c("Tournoi non joué","Tournoi non joué","Tournoi non joué","Tournoi non joué")
+Score <- c("Tournoi non joué","Tournoi non joué","Tournoi non joué","Tournoi non joué")
+
+df <- data.frame(Tournois, dernier_match,adversaire,Résultat,Score)
+colnames(df) <- c("Tournois", "Dernier match joué", "Adversaire","Résultat","Score")
+
+if (nrow(aus) != 0){
+  
+  df[1,2] = aus[1,8]
+  if ( aus[1,3] == id_joueuse){
+    df[1,3] = aus[1,6]
+    }else{
+      df[1,3] = aus[1,4]
+    }
+  if ( aus[1,3] == id_joueuse){
+    df[1,4] = "Gagné"
+  }else{
+    df[1,4] = "Perdu"
+  }
+  df[1,5] = aus[1,7]
+}
+
+if (nrow(roland) != 0){
+  
+  df[2,2] = roland[1,8]
+  if ( roland[1,3] == id_joueuse){
+    df[2,3] = roland[1,6]
+  }else{
+    df[2,3] = roland[1,4]
+  }
+  if ( roland[1,3] == id_joueuse){
+    df[2,4] = "Gagné"
+  }else{
+    df[2,4] = "Perdu"
+  }
+  df[2,5] = roland[1,7]
+}
+
+if (nrow(us) != 0){
+  
+  df[3,2] = us[1,8]
+  if ( us[1,3] == id_joueuse){
+    df[3,3] = us[1,6]
+  }else{
+    df[3,3] = us[1,4]
+  }
+  if ( us[1,3] == id_joueuse){
+    df[3,4] = "Gagné"
+  }else{
+    df[3,4] = "Perdu"
+  }
+  df[3,5] = us[1,7]
+}
+
+if (nrow(uk) != 0){
+  
+  df[4,2] = uk[1,8]
+  if ( uk[1,3] == id_joueuse){
+    df[4,3] = uk[1,6]
+  }else{
+    df[4,3] = uk[1,4]
+  }
+  if ( uk[1,3] == id_joueuse){
+    df[4,4] = "Gagné"
+  }else{
+    df[4,4] = "Perdu"
+  }
+  df[4,5] = us[1,7]
+}
+
+for (i in c(1:4)) {
+  if (df[i,2] == "F"){
+    df[i,2] = "Finale"
+  } else if (df[i,2] == "SF"){
+    df[i,2] = "Demie finale"
+  } else if (df[i,2] == "QF"){
+    df[i,2] = "Quart de finale"
+  } else if (df[i,2] == "R16"){
+    df[i,2] = "8ème de finale"
+  } else if (df[i,2] == "R32"){
+    df[i,2] = "3ème tours"
+  } else if (df[i,2] == "R64"){
+    df[i,2] = "2ème tours"
+  } else if (df[i,2] == "R128"){
+    df[i,2] = "1er tours"
+  }else {
+    df[i,2] = df[i,2]
+    
+  }
+  
+}
+
+df
+
+},
+  striped = T,
+  hover = T,
+  bordered = T)
+tableOutput("resu_tournois")
+
+
+```
+
+row
+-----------------------------------------------------------------------
+
+### Saison de {.no-title}
+
+```{r}
+renderValueBox({
+  
+titre <- paste("Saison", input$season, "de", joueuse, sep = " ")
+valueBox(titre, color = "lavender")
+
+})
+```
+
+row
+-----------------------------------------------------------------------
+
+### Nombre de matchs de tournois joués
+
+```{r}
+renderValueBox({
+
+nb_match <- matches_joueuse %>%
+  filter(annee == input$season)
+
+nb_match_J <- as.numeric(nrow(nb_match))
+valueBox(nb_match_J, icon = "fas fa-baseball-ball", color = "aliceblue")
+
+})
+```
+
+### Nombre de matchs de tournois gagnés
+
+```{r}
+renderValueBox({
+nb_match <- matches_joueuse %>%
+  filter(annee == input$season & winner_id == id_joueuse)
+
+nb_gagne <- as.numeric(nrow(nb_match))
+
+valueBox(nb_gagne, icon = "fa-trophy", color = "aliceblue")
+
+})
+```
+
+### Nombre de tournois remportés
+
+```{r}
+renderValueBox({
+
+nb_match <- matches_joueuse %>%
+  filter(annee == input$season)%>%
+  filter(round == "F")
+
+nb_tournois_g <- as.numeric(nrow(nb_match))
+valueBox(nb_tournois_g, 
+         icon = "fa-medal", color = "aliceblue")
+
+
+})
+```
+
+row {.tabset .tabset-fade}
+-----------------------------------------------------------------------
+
+### Pourcentage de victoires / défaites sur dur
+
+```{r}
+output$surface_hard <- renderPlot({
+match_tournois <- matches_joueuse %>%
+  filter(annee == input$season)
+
+match_tournois$Resultats <- ifelse(match_tournois$winner_id == id_joueuse , "Matchs gagnés", "Matchs perdus")
+
+Hard <- match_tournois  %>%
+  filter(surface == "Hard") %>%
+  group_by(Resultats)%>%
+  summarise(n=n())
+
+df2 <- Hard %>% 
+  mutate(csum = rev(cumsum(rev(n))), 
+         pos = n/2 + lead(csum, 1),
+         pos = if_else(is.na(pos), n/2, pos))
+
+pourcentage <- c(round(df2$n/sum(df2$n)*100))
+
+ggplot(Hard, aes(x="", y=n, fill=Resultats)) +
+  geom_bar(width = 1, stat = "identity")+
+  coord_polar("y", start=0)+  
+  scale_fill_manual(values=c("#996699", "#CC99CC"))+
+  geom_label_repel(data = df2,
+                   aes(y = pos, label = paste0(pourcentage, "%")),
+                   size = 4.5, nudge_x = 1, show.legend = FALSE) +
+  theme_void()
+  
+})
+
+plotOutput("surface_hard")
+```
+
+### Pourcentage de victoires / défaites sur terre battue
+
+```{r}
+output$surface_clay <- renderPlot({
+  
+match_tournois <- matches_joueuse %>%
+  filter(annee == input$season)
+
+match_tournois$Resultats <- ifelse(match_tournois$winner_id == id_joueuse , "Matchs gagnés", "Matchs perdus")
+
+Clay <- match_tournois  %>%
+  filter(surface == "Clay") %>%
+  group_by(Resultats)%>%
+  summarise(n=n())
+
+df2 <- Clay %>% 
+  mutate(csum = rev(cumsum(rev(n))), 
+         pos = n/2 + lead(csum, 1),
+         pos = if_else(is.na(pos), n/2, pos))
+
+pourcentage <- c(round(df2$n/sum(df2$n)*100))
+
+  ggplot(Clay, aes(x="", y=n, fill=Resultats)) +
+  geom_bar(width = 1, stat = "identity")+
+  coord_polar("y", start=0)+  
+  scale_fill_manual(values=c("#996699", "#CC99CC"))+
+  geom_label_repel(data = df2,
+                   aes(y = pos, label = paste0(pourcentage, "%")),
+                   size = 4.5, nudge_x = 1, show.legend = FALSE) +
+  theme_void()
+
+})
+
+plotOutput("surface_clay")
+
+```
+
+### Pourcentage de victoires / défaites sur gazon
+
+```{r}
+output$surface_grass <- renderPlot({
+
+match_tournois <- matches_joueuse %>%
+  filter(annee == input$season)
+
+match_tournois$Resultats <- ifelse(match_tournois$winner_id == id_joueuse , "Matchs gagnés", "Matchs perdus")
+
+Grass <- match_tournois  %>%
+  filter(surface == "Grass") %>%
+  group_by(Resultats)%>%
+  summarise(n=n())
+
+df2 <- Grass %>% 
+  mutate(csum = rev(cumsum(rev(n))), 
+         pos = n/2 + lead(csum, 1),
+         pos = if_else(is.na(pos), n/2, pos))
+
+pourcentage <- c(round(df2$n/sum(df2$n)*100))
+
+ggplot(Grass, aes(x="", y=n, fill=Resultats)) +
+  geom_bar(width = 1, stat = "identity")+
+  coord_polar("y", start=0)+  
+  scale_fill_manual(values=c("#996699", "#CC99CC"))+
+  geom_label_repel(data = df2,
+                   aes(y = pos, label = paste0(pourcentage, "%")),
+                   size = 4.5, nudge_x = 1, show.legend = FALSE) +
+  theme_void()
+
+})
+
+plotOutput("surface_grass")
+
+```
+
+### Pourcentage de victoires / défaites sur moquette
+
+```{r}
+output$surface_carpet <- renderPlot({
+
+  match_tournois <- matches_joueuse %>%
+  filter(annee == input$season)
+
+match_tournois$Resultats <- ifelse(match_tournois$winner_id == id_joueuse , "Matchs gagnés", "Matchs perdus")
+
+Carpet <- match_tournois  %>%
+  filter(surface == "Carpet") %>%
+  group_by(Resultats)%>%
+  summarise(n=n())
+
+df2 <- Carpet %>% 
+  mutate(csum = rev(cumsum(rev(n))), 
+         pos = n/2 + lead(csum, 1),
+         pos = if_else(is.na(pos), n/2, pos))
+
+pourcentage <- c(round(df2$n/sum(df2$n)*100))
+
+  ggplot(Carpet, aes(x="", y=n, fill=Resultats)) +
+  geom_bar(width = 1, stat = "identity")+
+  coord_polar("y", start=0)+  
+  scale_fill_manual(values=c("#996699", "#CC99CC"))+
+  geom_label_repel(data = df2,
+                   aes(y = pos, label = paste0(pourcentage, "%")),
+                   size = 4.5, nudge_x = 1, show.legend = FALSE) +
+  theme_void()
+})
+
+plotOutput("surface_carpet")
+```
