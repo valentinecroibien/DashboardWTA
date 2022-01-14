@@ -15,21 +15,21 @@ Ce Dashboard a pour objectif de présenter une joueuse de tennis inscrite à la 
 https://valentinecroibien.shinyapps.io/dashboard_final/ 
 
 ## Table des matières
-1. [Présentation des différentes pages](#1)
+1. [Présentation des différentes pages](#presenteation_page)
     1. [Accueil](#1.1)
     2. [Page 1](#1.2)
     3. [Page 2](#1.3)
     4. [Page 3](#1.4)
-2. [Présentation technique](#2)
+2. [Présentation technique](#presenteation_tech)
     1. [Joueuse](#2.1)
     2. [Thème](#2.2)
     3. [Liste des packages](#2.3)
     4. [Améliorations](#2.4)
-3. [Répartition du travail](#3)
-4. [Source](#4)
+3. [Répartition du travail](#repartition)
+4. [Source](#source)
 
 
-##  **Présentation des différentes pages** <a name="1"></a>
+##  **Présentation des différentes pages** <a name="presenteation_page"></a>
 
 Description du contenu des différentes pages et justification de nos choix de représentation.
 
@@ -76,7 +76,7 @@ On y retrouve :
 * **Le pourcentage de jeux gagnés et perdus par la joueuse dans le tournoi**. Nous avons choisi un diagramme secteur afin de montrer les parties d'un tout, ici le pourcentage de jeux gagnés et perdus sur l'ensemble du tournoi.
 * **Le pourcentage de break points sauvés par la joueuse sur l'ensemble du tournoi**. Nous avons choisi une jauge afin de montrer une partie d'un tout, ici le pourcentage de break points sauvés parmi tous les break points auxquels la joueuse a fait face. 
 
-## **Présentation technique** <a name="2"></a>
+## **Présentation technique** <a name="presenteation_tech"></a>
 
 ### Joueuse <a name="2.2"></a>
 
@@ -122,7 +122,7 @@ Liste des améliorations :
 * Sélection de joueuse
 * Afficher un message de "données manquantes" quand on utilise une valeur d'input
 
-## **Répartition du travail** <a name="3"></a>
+## **Répartition du travail** <a name="repartition"></a>
 
 **Margaux :**
 
@@ -163,7 +163,7 @@ Liste des améliorations :
 
 Maxime, Awa et Aurore se sont concentré sur la partie d’apprentissage automatique du projet. 
 
-## **Source** <a name="4"></a>
+## **Source** <a name="source"></a>
 
 Base de données : 
 https://github.com/JeffSackmann/tennis_wta
