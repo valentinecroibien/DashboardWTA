@@ -1571,7 +1571,8 @@ output$bp <- renderGauge({
   }
   
   gauge(pct_bp, min = 0, max = 100, symbol = "%",
-        gaugeSectors(success = c(70, 100), warning = c(40, 69), danger = c(0, 39)))
+        gaugeSectors(success = c(51, 100), warning = c(31, 50), danger = c(0, 30),
+                     colors = c("#d6f090","#ebb573","#D45757")))
 })
 
 gaugeOutput("bp", width = '700px', height = '400px')
