@@ -6,7 +6,9 @@ output:
     theme: united
 ---
 
-Pour notre projet sur le circuit féminin de tenis, nous devons identifier les valeurs manquantes afin de les traiter au mieux avant de réaliser nos analyses. 
+<div style="text-align: justify">
+
+Pour notre projet sur le circuit féminin de tennis, nous devons identifier les valeurs manquantes afin de les traiter au mieux avant de réaliser nos analyses. 
 
 ``` {r initialisation, include= FALSE}
 library(ggplot2)
@@ -67,7 +69,7 @@ wta_matches_2000 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Data/Projet
 plot_missing(wta_matches_2000, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_2000")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 4 d'entre elle avec plus de 50% de valeurs manquantes et 19 avec 100%. Les 6 autres variables restantes ont moins de 50% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank**, **loser_rank_points**, **winner_ht** et **loser_ht**, elles peuvent être complétées avec une autre BDD. 
+Dans cette base de données, 29 variables ont des valeurs manquantes dont 4 d'entre elles avec plus de 50% de valeurs manquantes et 19 avec 100%. Les 6 autres variables restantes ont moins de 50% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank**, **loser_rank_points**, **winner_ht** et **loser_ht**, elles peuvent être complétées avec une autre BDD.
 
 ### BDD wta_matches_qual_itf
 
@@ -76,7 +78,7 @@ wta_matches_qual_itf_2000 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Da
 plot_missing(wta_matches_qual_itf_2000, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_qual_itf_2000")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 7 d'entre elle avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont moins de 50% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
+Dans cette base de données, 29 variables ont des valeurs manquantes dont 7 d'entre elles avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont moins de 50% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
 
 ## Année 2001
 
@@ -88,7 +90,7 @@ wta_matches_2001 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Data/Projet
 plot_missing(wta_matches_2001, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_2001")
 ```
 
-Dans cette base de donnée 30 variables avec des valeurs manquantes dont 6 d'entre elle avec plus de 50% de valeurs manquantes et 19 avec 100%. Les 5 autres variables restantes ont moins de 50% de valeurs manquantes. Ce sont les varibales **winner_age**, **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
+Dans cette base de données, 30 variables ont des valeurs manquantes dont 6 d'entre elles avec plus de 50% de valeurs manquantes et 19 avec 100%. Les 5 autres variables restantes ont moins de 50% de valeurs manquantes. Ce sont les variables **winner_age**, **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
 
 ### BDD wta_matches_qual_itf
 
@@ -97,7 +99,7 @@ wta_matches_qual_itf_2001 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Da
 plot_missing(wta_matches_qual_itf_2001, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_qual_itf_2001")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 7 d'entre elle avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont moins de 50% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
+Dans cette base de données, il y a 29 variables avec des valeurs manquantes dont 7 d'entre elles avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont moins de 50% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
 
 ## Année 2002
 
@@ -109,7 +111,7 @@ wta_matches_2002 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Data/Projet
 plot_missing(wta_matches_2002, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_2002")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 6 d'entre elle avec plus de 50% de valeurs manquantes et 19 avec 100%. Les 4 autres variables restantes ont moins de 10% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
+Dans cette base de données, il y a 29 variables avec des valeurs manquantes dont 6 d'entre elles avec plus de 50% de valeurs manquantes et 19 avec 100%. Les 4 autres variables restantes ont moins de 10% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
 
 ### BDD wta_matches_qual_itf
 
@@ -118,7 +120,7 @@ wta_matches_qual_itf_2002 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Da
 plot_missing(wta_matches_qual_itf_2002, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_qual_itf_2002")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 7 d'entre elle avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont moins de 25% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
+Dans cette base de données, 29 variables ont des valeurs manquantes dont 7 d'entre elles avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont moins de 25% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
 
 ## Année 2003
 
@@ -130,7 +132,7 @@ wta_matches_2003 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Data/Projet
 plot_missing(wta_matches_2003, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_2003")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 22 d'entre elle avec plus de 40% de valeurs manquantes et 3 avec 100%. Les 4 autres variables restantes ont moins de 5% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. De plus la pluspart des variables avec des valeurs manquantes sont spécifiques aux matchs joués, il y a encore peu de tournois pour lesquels ses données ont été remplis. 
+Dans cette base de données, 29 variables ont des valeurs manquantes dont 22 d'entre elles avec plus de 40% de valeurs manquantes et 3 avec 100%. Les 4 autres variables restantes ont moins de 5% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. De plus la majorité des variables avec des valeurs manquantes sont spécifiques aux matchs joués, il y a encore peu de tournois pour lesquels ses données ont été remplis.
 
 
 ### BDD wta_matches_qual_itf
@@ -140,7 +142,7 @@ wta_matches_qual_itf_2003 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Da
 plot_missing(wta_matches_qual_itf_2001, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_qual_itf_2003")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 7 d'entre elle avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont moins de 50% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. 
+Dans cette base de données, 29 variables ont des valeurs manquantes dont 7 d'entre elles avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont moins de 50% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
 
 ## Année 2004
 
@@ -152,7 +154,7 @@ wta_matches_2004 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Data/Projet
 plot_missing(wta_matches_2004, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_2004")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 21 d'entre elle avec plus de 50% de valeurs manquantes et 3 avec 100%. Les 5 autres variables restantes ont moins de 40% de valeurs manquantes. Ce sont les varibales **winner_ht**, **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. La variable **loser_ht** peut aussi être complétée. De plus la pluspart des variables avec des valeurs manquantes sont spécifiques aux matchs joués, il y a encore peu de tournois pour lesquels ses données ont été remplis.
+Dans cette base de données, 29 variables ont des valeurs manquantes dont 21 d'entre elles avec plus de 50% de valeurs manquantes et 3 avec 100%. Les 5 autres variables restantes ont moins de 40% de valeurs manquantes. Ce sont les variables **winner_ht**, **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. La variable **loser_ht** peut aussi être complétée. De plus la majorité des variables avec des valeurs manquantes sont spécifiques aux matchs joués, il y a encore peu de tournois pour lesquels ses données ont été remplis.
 
 ### BDD wta_matches_qual_itf
 
@@ -161,7 +163,7 @@ wta_matches_qual_itf_2004 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Da
 plot_missing(wta_matches_qual_itf_2004, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_qual_itf_2004")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 7 d'entre elle avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont moins de 25% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. 
+Dans cette base de données, il y a 29 variables avec des valeurs manquantes dont 7 d'entre elles avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont moins de 25% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. 
 
 ## Année 2005
 
@@ -173,7 +175,7 @@ wta_matches_2005 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Data/Projet
 plot_missing(wta_matches_2005, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_2005")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 2 avec moins de 50% de valeurs manquantes, 20 avec plus de 50% de valeurs manquantes et 3 avec 100%. Les 4 autres variables restantes ont moins de 5% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. De plus la pluspart des variables avec des valeurs manquantes sont spécifiques aux matchs joués, il y a encore peu de tournois pour lesquels ses données ont été remplis.
+Dans cette base de données, il y a 29 variables avec des valeurs manquantes dont 2 avec moins de 50% de valeurs manquantes, 20 avec plus de 50% de valeurs manquantes et 3 avec 100%. Les 4 autres variables restantes ont moins de 5% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. De plus la majorité des variables avec des valeurs manquantes sont spécifiques aux matchs joués, il y a encore peu de tournois pour lesquels ses données ont été remplis.
 
 ### BDD wta_matches_qual_itf
 
@@ -182,7 +184,7 @@ wta_matches_qual_itf_2005 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Da
 plot_missing(wta_matches_qual_itf_2005, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_qual_itf_2005")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 7 d'entre elle avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont moins de 15% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
+Dans cette base de données, il y a 29 variables avec des valeurs manquantes dont 7 d'entre elles avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont moins de 15% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
 
 ## Année 2006
 
@@ -194,7 +196,7 @@ wta_matches_2006 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Data/Projet
 plot_missing(wta_matches_2006, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_2006")
 ```
 
-Dans cette base de donnée 30 variables avec des valeurs manquantes dont 2 avec moins de 40% de valeurs manquantes, 20 avec plus de 50% de valeurs manquantes et 3 avec 100%. Les 5 autres variables restantes ont moins de 5% de valeurs manquantes. Ce sont les varibales **surface**, **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. De plus la pluspart des variables avec des valeurs manquantes sont spécifiques aux matchs joués, il y a encore peu de tournois pour lesquels ses données ont été remplis.
+Dans cette base de données, il y a 30 variables avec des valeurs manquantes dont 2 avec moins de 40% de valeurs manquantes, 20 avec plus de 50% de valeurs manquantes et 3 avec 100%. Les 5 autres variables restantes ont moins de 5% de valeurs manquantes. Ce sont les variables **surface**, **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. De plus, la majorité des variables avec des valeurs manquantes sont spécifiques aux matchs joués, il y a encore peu de tournois pour lesquels ses données ont été remplis.
 
 ### BDD wta_matches_qual_itf
 
@@ -203,7 +205,7 @@ wta_matches_qual_itf_2006 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Da
 plot_missing(wta_matches_qual_itf_2006, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_qual_itf_2006")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 7 d'entre elle avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont moins de 20% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
+Dans cette base de données, 29 variables ont des valeurs manquantes dont 7 d'entre elles avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont moins de 20% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
 
 ## Année 2007
 
@@ -215,7 +217,7 @@ wta_matches_2007 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Data/Projet
 plot_missing(wta_matches_2007, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_2007")
 ```
 
-Dans cette base de donnée 30 variables avec des valeurs manquantes dont 18 avec moins de 50% de valeurs manquantes, 4 avec plus de 50% de valeurs manquantes et 3 avec 100%. Les 5 autres variables restantes ont moins de 5% de valeurs manquantes. Ce sont les varibales **surface**, **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. De plus la pluspart des variables avec des valeurs manquantes sont spécifiques aux matchs joués, il y a encore peu de tournois pour lesquels ses données ont été remplis.
+Dans cette base de données, il y a 30 variables avec des valeurs manquantes dont 18 avec moins de 50% de valeurs manquantes, 4 avec plus de 50% de valeurs manquantes et 3 avec 100%. Les 5 autres variables restantes ont moins de 5% de valeurs manquantes. Ce sont les variables **surface**, **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. De plus la majorité des variables avec des valeurs manquantes sont spécifiques aux matchs joués, il y a encore peu de tournois pour lesquels ses données ont été remplis.
 
 ### BDD wta_matches_qual_itf
 
@@ -224,7 +226,7 @@ wta_matches_qual_itf_2007 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Da
 plot_missing(wta_matches_qual_itf_2007, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_qual_itf_2007")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 7 d'entre elle avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont environ moins de 20% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
+Dans cette base de données, 29 variables ont des valeurs manquantes dont 7 d'entre elles avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont environ moins de 20% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
 
 ## Année 2008
 
@@ -236,7 +238,7 @@ wta_matches_2008 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Data/Projet
 plot_missing(wta_matches_2008, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_2008")
 ```
 
-Dans cette base de donnée 30 variables avec des valeurs manquantes dont 18 avec moins de 30% de valeurs manquantes, 4 avec plus de 50% de valeurs manquantes et 3 avec 100%. Les 5 autres variables restantes ont environ moins de 5% de valeurs manquantes. Ce sont les varibales **surface**, **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. De plus la pluspart des variables avec des valeurs manquantes sont spécifiques aux matchs joués, il y a encore peu de tournois pour lesquels ses données ont été remplis.
+Dans cette base de données, il y a 30 variables avec des valeurs manquantes dont 18 avec moins de 30% de valeurs manquantes, 4 avec plus de 50% de valeurs manquantes et 3 avec 100%. Les 5 autres variables restantes ont environ moins de 5% de valeurs manquantes. Ce sont les variables **surface**, **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. De plus la majorité des variables avec des valeurs manquantes sont spécifiques aux matchs joués, il y a encore peu de tournois pour lesquels ses données ont été remplis.
 
 ### BDD wta_matches_qual_itf
 
@@ -245,7 +247,7 @@ wta_matches_qual_itf_2008 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Da
 plot_missing(wta_matches_qual_itf_2008, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_qual_itf_2008")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 7 d'entre elle avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont environ moins de 20% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
+Dans cette base de données, 29 variables ont des valeurs manquantes dont 7 d'entre elles avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont environ moins de 20% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
 
 ## Année 2009
 
@@ -257,7 +259,7 @@ wta_matches_2009 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Data/Projet
 plot_missing(wta_matches_2009, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_2009")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 18 avec moins de 30% de valeurs manquantes, 4 avec plus de 50% de valeurs manquantes et 3 avec 100%. Les 4 autres variables restantes ont environ moins de 5% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. De plus la pluspart des variables avec des valeurs manquantes sont spécifiques aux matchs joués, il y a encore peu de tournois pour lesquels ses données ont été remplis.
+Dans cette base de données, 29 variables ont des valeurs manquantes dont 18 avec moins de 30% de valeurs manquantes, 4 avec plus de 50% de valeurs manquantes et 3 avec 100%. Les 4 autres variables restantes ont environ moins de 5% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. De plus la majorité des variables avec des valeurs manquantes sont spécifiques aux matchs joués, il y a encore peu de tournois pour lesquels ses données ont été remplis.
 
 ### BDD wta_matches_qual_itf
 
@@ -266,7 +268,7 @@ wta_matches_qual_itf_2009 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Da
 plot_missing(wta_matches_qual_itf_2009, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_qual_itf_2009")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 7 d'entre elle avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont environ moins de 20% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
+Dans cette base de données, il y a 29 variables avec des valeurs manquantes dont 7 d'entre elles avec plus de 50% de valeurs manquantes et 18 avec 100%. Les 4 autres variables restantes ont environ moins de 20% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
 
 ## Année 2010
 
@@ -278,7 +280,7 @@ wta_matches_2010 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Data/Projet
 plot_missing(wta_matches_2010, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_2010")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 18 avec moins de 30% de valeurs manquantes, 4 avec plus de 50% de valeurs manquantes et 3 avec 100%. Les 4 autres variables restantes ont environ moins de 5% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. De plus la pluspart des variables avec des valeurs manquantes sont spécifiques aux matchs joués, il y a encore peu de tournois pour lesquels ses données ont été remplis.
+Dans cette base de données, 29 variables ont des valeurs manquantes dont 18 avec moins de 30% de valeurs manquantes, 4 avec plus de 50% de valeurs manquantes et 3 avec 100%. Les 4 autres variables restantes ont environ moins de 5% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées. De plus la majorité des variables avec des valeurs manquantes sont spécifiques aux matchs joués, il y a encore peu de tournois pour lesquels ses données ont été remplis.
 
 ### BDD wta_matches_qual_itf
 
@@ -287,7 +289,7 @@ wta_matches_qual_itf_2010 <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Da
 plot_missing(wta_matches_qual_itf_2010, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_matches_qual_itf_2010")
 ```
 
-Dans cette base de donnée 29 variables avec des valeurs manquantes dont 22 d'entre elle avec plus de 50% de valeurs manquantes et 3 avec 100%. Les 4 autres variables restantes ont environ moins de 25% de valeurs manquantes. Ce sont les varibales **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
+Dans cette base de données, il y a 29 variables avec des valeurs manquantes dont 22 d'entre elles avec plus de 50% de valeurs manquantes et 3 avec 100%. Les 4 autres variables restantes ont environ moins de 25% de valeurs manquantes. Ce sont les variables **winner_rank**, **winner_rank_points**, **loser_rank** et **loser_rank_points**, elles peuvent être complétées avec une autre BDD. Les variables **winner_ht** et **loser_ht** peuvent aussi être complétées.
 
 ## Classement 
 
@@ -306,4 +308,6 @@ wta_rankings_10s <- read_csv("~/Documents/M2/Valorisation_donnee_Big_Data/Projet
 plot_missing(wta_rankings_10s, title = "Pourcetage de valeurs manquantes dans chaque variable de wta_rankings_10s")
 ```
 
-Pour les années 2010 il y a également que la variable **tours** qui a des valeurs manquantes. Cependant elle en a moins que pour les années 2000 (environ 28%).
+Pour les années 2010, il y a également que la variable **tours** qui a des valeurs manquantes. Cependant elle en a moins que pour les années 2000 (environ 28%).
+
+</div> 

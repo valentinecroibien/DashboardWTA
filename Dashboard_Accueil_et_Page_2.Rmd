@@ -178,7 +178,7 @@ matches_joueuse$annee <- str_sub(matches_joueuse$tourney_date, 1, 4)
 
 ```
 
-Column {.sidebar data-width=700 data-padding=10}
+Column {.sidebar data-width=600 data-padding=10}
 -------------------------------------
 
 
@@ -352,7 +352,7 @@ tableOutput("resu_tournois")
 
 ```
 
-row
+row {data-width=600}
 -----------------------------------------------------------------------
 
 ### Saison de {.no-title}
