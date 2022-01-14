@@ -120,7 +120,7 @@ sass_0.4.0
 Liste des améliorations : 
 
 * Sélection de joueuse
-* Afficher un message de "données manquantes" quand on utilise une valeur d'input
+* Afficher un message de "données manquantes" quand on utilise une valeur d'input dans un filtre de la BDD et qu'il n'y a pas de valeurs correspondantes.
 
 ## **Répartition du travail** <a name="repartition"></a>
 
