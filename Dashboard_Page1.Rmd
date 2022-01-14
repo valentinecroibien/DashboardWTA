@@ -1,0 +1,424 @@
+---
+title: "Women's Tennis Association"
+output: 
+  flexdashboard::flex_dashboard:
+    orientation : row
+    vertical_layout: fill
+    css: styles.css
+    source_code: embed
+runtime : shiny
+---   
+
+```{r setup, include=FALSE}
+library(flexdashboard)
+library(shiny)
+library(here)
+library("tidyverse")
+library("magrittr")
+library("stringr")
+library('purrr')
+library("dplyr")
+library("DataExplorer")
+library("lubridate")
+library(plotly)
+library(shinyWidgets)
+library(rvest)
+
+list_files <- list.files(here("tennis_wta"))
+
+list_matches <- grep(pattern = "^wta_matches_2[[:digit:]]{3}.csv$", x = list_files, value = TRUE)
+
+list_qualifs <- grep(pattern = "^wta_matches_qual_itf_2[[:digit:]]{3}.csv$", x = list_files, value = TRUE)
+
+list_players <- grep(pattern = "^wta_players.csv$", x = list_files, value = TRUE)
+
+list_rankings <- grep(pattern = "^wta_rankings_[[:digit:]]{2}s.csv$", x = list_files, value = TRUE)
+
+list_rankings <- list_rankings[1:3]
+list_rankings[4] <- grep(pattern = "^wta_rankings_current.csv$", x = list_files, value = TRUE)
+
+
+#### Liste des tibbles des matches de 2000 à 2021 ####
+# On crée le vecteur de chaines de caractères des nom des tibbles qu'on va créer lors de l'importation
+lst_names <- paste('wta_', str_extract(string = list_matches, pattern = "[[:digit:]]{4}"), sep = "")
+
+# On effectue une boucle avec map (ou lapply) pour importer les donnees et stocker les tibbles dans une liste
+lst_matchs <- map(.x = list_matches, 
+                  .f = function (x) read_csv(paste("tennis_wta/", 
+                                                   x, sep = ""), col_types = 'cccdcdddccccdcddccccdcdcdcddddddddddddddddddddddd'))
+names(lst_matchs) <- lst_names
+
+# Recolloage des bases à l'aide de la fonction reduce
+# Résultats des matches de 2000 à 2021
+wta_matches <- reduce(.x = lst_matchs, .f = bind_rows)
+
+
+#### Liste des tibbles des matches de qualification de 2000 à 2021 ####
+# On crée le vecteur de chaines de caractères des nom des tibbles qu'on va créer lors de l'importation
+lst_names <- paste('wta_qualif', str_extract(string = list_qualifs, pattern = "[[:digit:]]{4}"), sep = "")
+
+# On effectue une boucle avec map (ou lapply) pour importer les donnees et stocker les tibbles dans une liste
+lst_qualifs <- map(.x = list_qualifs, 
+                   .f = function (x) read_csv(paste("tennis_wta/", 
+                                                    x, sep = ""), col_types = 'cccdcdddccccdcddccccdcdcdcddddddddddddddddddddddd' ))
+names(lst_qualifs) <- lst_names
+
+# Recolloage des bases à l'aide de la fonction reduce
+# Résultats des matches qualifs de 2000 à 2021
+wta_qualifs <- reduce(.x = lst_qualifs, .f = bind_rows)
+
+
+
+#### Liste des classements de 2000 à 2021 ####
+# On crée le vecteur de chaines de caractères des nom des tibbles qu'on va créer lors de l'importation
+
+# On effectue une boucle avec map (ou lapply) pour importer les donnees et stocker les tibbles dans une liste
+lst_rankings <- map(.x = list_rankings, 
+                    .f = function (x) read_csv(paste("tennis_wta/", 
+                                                     x, sep = ""), col_types = "ddddd"))
+names(lst_rankings) <- list_rankings
+
+# Recolloage des bases à l'aide de la fonction reduce
+# Résultats des matches qualifs de 2000 à 2021
+wta_rankings <- reduce(.x = lst_rankings, .f = bind_rows)
+
+#### Liste des joueurs ####
+wta_players <- read_csv("tennis_wta/wta_players.csv")
+wta_players <- wta_players[-c(1:2),]
+
+```
+
+
+Vision générale de la carrière
+===================================== 
+```{r}
+#### Liste des matchs joués par Justine Hénin (gagnante ou perdante) ####
+
+joueuse <- "Amelie Mauresmo"
+## Qualifications 
+wta_qualifs %>% 
+  filter(winner_name == joueuse | loser_name == joueuse) %>%
+  select(-c(winner_seed, winner_entry, loser_seed, loser_entry, minutes, w_SvGms, l_SvGms)) -> qualifs_joueuse
+
+## Matchs
+wta_matches %>% 
+  filter(winner_name == joueuse | loser_name == joueuse) %>%
+  select(-c(winner_seed, winner_entry, loser_seed, loser_entry, minutes, w_SvGms, l_SvGms)) -> matches_joueuse
+
+
+nom_joueuse <- str_split(joueuse," ", simplify = TRUE)[2]
+prenom_joueuse <- str_split(joueuse," ", simplify = TRUE)[1]
+```
+
+
+Ligne 1 {data-height=400}
+-----------------------------------------------------------------------
+
+### Profil de la joueuse
+```{r}
+id_joueuse <- wta_players$player_id[which((wta_players$name_last == nom_joueuse) & (wta_players$name_first == prenom_joueuse))]
+
+i <- which(wta_players$player_id == id_joueuse)
+
+dob_joueuse <- wta_players$dob[i]
+annee <- str_sub(dob_joueuse, 1, 4)
+mois <- str_sub(dob_joueuse, 5, 6)
+jour <- str_sub(dob_joueuse, 7, 8)
+
+dob_joueuse <- paste(jour, mois, annee, sep = "/")
+dob_joueuse <- as.Date(dob_joueuse,format="%d/%m/%Y")
+
+
+height_joueuse <- wta_players$height[i]
+hand_joueuse <- wta_players$hand[i]
+if (hand_joueuse =='R') {
+  hand_joueuse = 'Droite'
+}else{
+   hand_joueuse = 'Gauche'
+}
+
+nat_joueuse = wta_players$ioc[i]
+```
+
+```{r}
+url_wikipedia <- paste("https://fr.wikipedia.org/wiki/", prenom_joueuse, sep = "")
+url_wikipedia <- paste(url_wikipedia, nom_joueuse, sep = "_")
+
+page_wikipedia <- xml2::read_html(url_wikipedia, encoding="UTF-8")
+
+imgs2 <- html_nodes(page_wikipedia, "table")[1]%>%
+  html_nodes("img")%>%
+  html_attr('src')
+
+
+image_profil2 <- str_sub(imgs2[1], 3,-1)
+
+download.file(image_profil2, "profil.jpg", mode = "wb")
+```
+
+
+<div class = "row">
+<div class = "col-md-6">
+<center>
+<img alt src ="profil.jpg" height = 250>
+</center>
+</div>
+
+
+<div class = "col-md-6">
+<center> 
+<h2>`r joueuse`</h2>
+</center>
+<p> <b>Date de naissance :</b> `r dob_joueuse`, (`r trunc(time_length(interval(dob_joueuse, Sys.time()), "years"))` ans)</p>
+<p> <b>Nationalité :</b> `r nat_joueuse` </p>
+<p> <b>Taille :</b> `r height_joueuse` cm</p>
+<p> <b>Main :</b> `r hand_joueuse`</p>
+</div>
+</div>
+
+### Évolution dans le classement 
+
+```{r, fig.width = 9}
+annee <- str_sub(wta_rankings$ranking_date, 1, 4)
+mois <- str_sub(wta_rankings$ranking_date, 5, 6)
+jour <- str_sub(wta_rankings$ranking_date, 7, 8)
+
+wta_rankings$ranking_date <- paste(jour, mois, annee, sep = "/")
+wta_rankings$ranking_date <- as.Date(wta_rankings$ranking_date,format="%d/%m/%Y")
+
+wta_rankings %>%
+  filter(player == id_joueuse) %>%
+  select(c(ranking_date, rank, points)) -> rankings_joueuse
+
+if (nrow(rankings_joueuse) != 0){
+library("scales")
+a <- ggplot(data = rankings_joueuse, aes(x=ranking_date, y = rank)) +
+  geom_line(size = 0.4, color = "#996699") +
+  scale_y_reverse() + 
+  ylab("Rang") +
+  xlab("Date") +
+  theme(axis.text.x = element_text(angle=45)) + 
+  theme_minimal()
+
+ggplotly(a)
+}else{
+  message <- paste("Les classements de", joueuse,"ne sont pas disponibles.", sep = " ")
+  renderText(message)
+}
+```
+
+Nombre clés {data-height=150}
+-----------------------------------------------------------------------
+
+### Nombre de médailles
+```{r}
+list <-  html_nodes(page_wikipedia, "table")[1]%>%
+  html_nodes("tr")%>%
+  html_text()
+
+val_gain <- grep(pattern = "^Gains en tournois.", x = list, value = TRUE)
+i_gain <- which(list == val_gain)
+
+val_medal <- grep(pattern = "^Simple.", x = list, value = TRUE)
+i_medal <- which(list == val_medal[length(val_medal)])
+
+tab <- html_nodes(page_wikipedia, "table")[1]%>%
+  html_nodes("tr")
+
+gain <- tab[i_gain]%>%
+  html_nodes("td")%>%
+  html_text()
+gains <- str_sub(gain, 1, -3)
+
+
+medals <- tab[i_medal]%>%
+  html_nodes("td")%>%
+  html_text()
+
+med_or <- as.numeric(str_sub(medals[2], 1, -2))
+if (is.na(med_or)){
+  med_or = 0
+}
+
+med_argent <- as.numeric(str_sub(medals[3], 1, -2))
+if (is.na(med_argent)){
+  med_argent = 0
+}
+
+med_bronze <- as.numeric(str_sub(medals[4], 1, -2))
+if (is.na(med_bronze)){
+  med_bronze = 0
+}
+
+val_titres <- grep(pattern = "^Titres.", x = list, value = TRUE)
+i_titres <- which(list == val_titres[1])
+
+titres <- tab[i_titres]%>%
+  html_nodes("td")%>%
+  html_text()
+titres <- str_sub(titres[2], 1, -2)
+
+```
+
+```{r}
+med = med_or + med_argent + med_bronze
+
+valueBox(value = med,icon = "fas fa-medal",caption = "Nombre de médailles olympiques", color = "lavender")
+```
+
+### Nombre de titres
+
+```{r}
+valueBox(value = titres,icon = "fas fa-trophy",caption = "Nombre de titres", color = "lavender")
+```
+
+### Gains en tournois
+```{r}
+gains <- paste(gains, "$", sep="")
+```
+
+```{r}
+valueBox(value = gains, icon = "fas fa-dollar-sign",caption = "Gains en tournois", color = "lavender")
+```
+
+Victoires {data-height=350}
+-----------------------------------------------------------------------
+
+### Pourcentage de victoire par type de surface
+```{r}
+matches_joueuse$surface <- factor(matches_joueuse$surface, levels = c("Clay", "Hard", "Grass", "Carpet"), labels = c("Terre Battue", "Dur", "Gazon","Moquette"))
+Surface.Variables <- levels(matches_joueuse$surface)
+selectInput("surface_variable", label = "Sélectionner le type de surface", choices = Surface.Variables, selected = 'Terre Battue')
+```
+
+```{r}
+matches_joueuse %>%
+    select(tourney_date, tourney_name, tourney_level, surface, round, winner_name, loser_name, score) %>%
+    mutate(opponent = case_when(winner_name == joueuse ~ loser_name,
+                                winner_name != joueuse ~ winner_name),
+           result =case_when(winner_name == joueuse ~ "Victoire",
+                             winner_name != joueuse ~ 'Défaite')) %>%
+    select(-winner_name, -loser_name) -> summary_carriere
+
+# summary_carriere %>%
+#   select(-opponent, -score) %>%
+#   mutate(tourney_result = case_when(round == 'F' & result == 'Victoire' ~ 'W',
+#                                     result == 'Défaite' ~ round)) %>%
+#   drop_na(tourney_result) %>%
+#   arrange(tourney_date) -> matches_joueuse
+```
+
+```{r}
+victory_surface <- function(surf_choix){
+  
+  summary_carriere %>%
+    filter(surface == surf_choix ) %>%
+    group_by(result)%>%
+    summarise(n=n()) -> resume_results
+  
+  if(nrow(resume_results) != 1){
+    nb_victoire <- resume_results$n[which(resume_results$result == "Victoire")]
+  }else{
+      nb_victoire <- 0
+    }
+
+  y <- nb_victoire
+  y
+}
+```
+
+```{r}
+nb_match <- function(surf_choix){
+  summary_carriere %>%
+    filter(surface == surf_choix) %>%
+    group_by(result)%>%
+    summarise(n=n()) -> resume_results
+  
+  if(nrow(resume_results) > 1){
+    nb_victoire <- resume_results$n[which(resume_results$result == "Victoire")]
+  }else{
+      nb_victoire <- 0
+  }
+  
+  if(nrow(resume_results) != 0){
+    nb_defaite <- resume_results$n[which(resume_results$result == "Défaite")]
+  }else{
+      nb_defaite <- 0
+  }
+
+  nb_tot <- nb_victoire + nb_defaite
+  
+  y <- nb_tot
+  y
+}
+
+```
+
+```{r}
+output$gauge <- renderGauge({
+  rate <- round(victory_surface(input$surface_variable)*100/nb_match(input$surface_variable),1)
+  
+  if (is.null(rate)){
+    rate = "-"
+  }
+    gauge(rate, min = 0, max = 100, symbol = '%', gaugeSectors(
+      success = c(80, 100), warning = c(40, 79), danger = c(0, 39)
+  ))
+})
+
+```
+
+```{r}
+output$nb_surface <- renderText({
+  nb <- nb_match(input$surface_variable)
+})
+```
+
+<div class = "row">
+<div class = "col-md-6">
+<center>
+`r gaugeOutput("gauge")`
+</center>
+</div>
+
+<div class = "col-md-6">
+<center>
+<h4><b>Nombre de matchs joués sur cette surface :</b></h4>
+<h5>`r textOutput("nb_surface")` </h5>
+</center>
+</div>
+</div>
+
+### Répartition des victoires et défaites face à ses principales adversaires
+
+```{r}
+summary_carriere %>%
+  group_by(opponent, result) %>%
+  summarize(`Nombre de matchs` = n()) %>%
+  ungroup() %>% #Penser à dégrouper pour pouvoir calculer Total par la suite
+  #On arrange un peu la présentation du tableau
+  pivot_wider(names_from = result, values_from  = `Nombre de matchs`) %>%
+  mutate(Total = apply(select(., Victoire, Défaite), 1, sum, na.rm = TRUE)) %>%
+  arrange(desc(Total))-> op
+
+op[1:10,]%>%
+  pivot_longer(cols = c(Victoire, Défaite), names_to = "result", values_to = "eff") %>%
+  ggplot(mapping = aes(x = reorder(opponent, Total), y = eff, fill = result)) +
+  geom_col() +
+  scale_fill_discrete(type = c('Défaite' = "#CC99CC", "Victoire" = "#996699" )) +
+  coord_flip() +
+  theme_bw() +
+  labs(y = "Nombre de confrontations", x = 'Adversaires') +
+  geom_text(mapping = aes(y = -0.1, label = Total), size = 2) +
+  labs(fill = "Résultat") -> a
+
+ggplotly(a)
+```
+
+Visualisation d'une saison de la joueuse
+===================================== 
+
+
+Visualisation par tournoi
+===================================== 
+
