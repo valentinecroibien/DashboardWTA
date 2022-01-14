@@ -78,7 +78,7 @@ On y retrouve :
 
 ## **Présentation technique** <a name="presenteation_tech"></a>
 
-### Joueuse <a name="2.2"></a>
+### Joueuse <a name="2.1"></a>
 
 La joueuse sélectionnée est Justine Henin. La prochaine étape de ce projet est de pouvoir sélectionner n'importe quelle joueuse sur la page d'accueil. Cependant, en changeant le nom de la joueuse à la ligne 85, tout le Dashboard s'adapte à celle-ci. Attention cela ne fonctionne pas pour : 
 
@@ -86,14 +86,14 @@ La joueuse sélectionnée est Justine Henin. La prochaine étape de ce projet es
 * Les joueuses avec leur nom ou prénom dans un alphabet autre que l'alphabet latin moderne
 * Les joueuses n'ayant pas de Wikipédia
 
-### Thème <a name="2.3"></a>
+### Thème <a name="2.2"></a>
 
 Utilisation d'une feuille de style pour le thème et pour modifier certains éléments. Nous avons utilisé le code (fichier.css) d'un thème existant, flatly, que nous avons modifié pour changer certains éléments du thème.
 
 **Important** <br>
 Il faut donc télécharger le fichier styles.css et le placer dans le même dossier que le Dashboard.
 
-### Liste des packages <a name="2.4"></a>
+### Liste des packages <a name="2.3"></a>
 
 digest_0.6.28       
 R6_2.5.1          
@@ -115,7 +115,7 @@ htmltools_0.5.2
 knitr_1.36          
 sass_0.4.0
 
-### Améliorations <a name="2.5"></a>
+### Améliorations <a name="2.4"></a>
 
 Liste des améliorations : 
 
